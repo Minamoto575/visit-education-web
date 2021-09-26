@@ -22,6 +22,10 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加
       </el-button>
+      <upload-excel-component :loading="downloadLoading" class="filter-item" style="margin-left:-5px;margin-right:10px" on-success="uploadSuccess" before-upload="beforeUpload" />
+      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-upload" @click="handleUpload">
+        导入
+      </el-button> -->
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button>
@@ -179,6 +183,7 @@
 </template>
 
 <script>
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import RecordUtil from '@/api/record'
 import waves from '@/directive/waves' // waves directive
@@ -204,7 +209,7 @@ var subjects = []
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: { Pagination,UploadExcelComponent },
   directives: { waves },
   filters: {
     // statusFilter(status) {
@@ -228,13 +233,13 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        projectName: '',
-        schoolName: '',
-        subjectName: '',
-        // importance: undefined,
-        // title: undefined,
-        // type: undefined,
-        // sort: '+id'
+        // projectName: '',
+        // schoolName: '',
+        // subjectName: '',
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
       },
       temp: {
         //id: undefined,
@@ -287,23 +292,23 @@ export default {
 
     getList() {
       this.listLoading = true,
-      RecordUtil.searchByCombination(this.listQuery).then(response => {
-        this.list = response.extra.records
-        //this.total = esponse.extra.total
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
-
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-
-      //   // Just to simulate the time of the request
+      // RecordUtil.searchByCombination(this.listQuery).then(response => {
+      //   this.list = response.extra.records
+      //   //this.total = esponse.extra.total
       //   setTimeout(() => {
       //     this.listLoading = false
       //   }, 1.5 * 1000)
       // })
+
+      fetchList(this.listQuery).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
 
     },
     handleFilter() {
@@ -325,14 +330,14 @@ export default {
       }
     },
 
-    // sortByID(order) {
-    //   if (order === 'ascending') {
-    //     this.listQuery.sort = '+id'
-    //   } else {
-    //     this.listQuery.sort = '-id'
-    //   }
-    //   this.handleFilter()
-    // },
+    sortByID(order) {
+      if (order === 'ascending') {
+        this.listQuery.sort = '+id'
+      } else {
+        this.listQuery.sort = '-id'
+      }
+      this.handleFilter()
+    },
     
     resetTemp() {
       this.temp = {
@@ -418,20 +423,23 @@ export default {
         this.dialogPvVisible = true
       })
     },
-    // handleDownload() {
-    //   this.downloadLoading = true
-    //   import('@/vendor/Export2Excel').then(excel => {
-    //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-    //     const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-    //     const data = this.formatJson(filterVal)
-    //     excel.export_json_to_excel({
-    //       header: tHeader,
-    //       data,
-    //       filename: 'table-list'
-    //     })
-    //     this.downloadLoading = false
-    //   })
-    // },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const data = this.formatJson(filterVal)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'table-list'
+        })
+        this.downloadLoading = false
+      })
+    },
+    handleUpload(){
+      
+    },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -441,10 +449,41 @@ export default {
         }
       }))
     },
-    // getSortClass: function(key) {
-    //   const sort = this.listQuery.sort
-    //   return sort === `+${key}` ? 'ascending' : 'descending'
-    // }
+    getSortClass: function(key) {
+      const sort = this.listQuery.sort
+      return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    beforeUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 1
+
+      if (isLt2M) {
+        return true
+      }
+
+      this.$message({
+        message: '文件大小不能超过2M！',
+        type: 'warning'
+      })
+      return false
+    },
+    handleSuccess({ results, header }) {
+      RecordUtil.uploadExcel(results).then(response =>{
+        if(response.code==200){
+          this.$message({
+          message: '上传成功！',
+          type: 'success'
+          })
+        }else{
+          this.$message({
+          message: '上传失败！',
+          type: 'warning'
+          })
+        }
+      })
+      
+      // this.tableData = results
+      // this.tableHeader = header
+    }
   }
 }
 </script>
