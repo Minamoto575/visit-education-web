@@ -9,6 +9,7 @@
 
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+import RecordUtil from '@/api/record'
 
 export default {
   name: 'UploadExcel',
@@ -21,21 +22,35 @@ export default {
   },
   methods: {
     beforeUpload(file) {
-      const isLt1M = file.size / 1024 / 1024 < 1
+      const isLt2M = file.size / 1024 / 1024 < 2
 
-      if (isLt1M) {
+      if (isLt2M) {
         return true
       }
 
       this.$message({
-        message: 'Please do not upload files larger than 1m in size.',
+        message: '文件大小不能超过2M！',
         type: 'warning'
       })
       return false
     },
     handleSuccess({ results, header }) {
-      this.tableData = results
-      this.tableHeader = header
+      RecordUtil.uploadExcel(results).then(response =>{
+        if(response.code==200){
+          this.$message({
+          message: '上传成功！',
+          type: 'success'
+          })
+        }else{
+          this.$message({
+          message: '上传失败！',
+          type: 'warning'
+          })
+        }
+      })
+      
+      // this.tableData = results
+      // this.tableHeader = header
     }
   }
 }

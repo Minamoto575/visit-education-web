@@ -97,6 +97,7 @@
           </el-tag>
         </template>
       </el-table-column> -->
+
       <el-table-column label="操作" align="center" min-width="10%" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
@@ -179,6 +180,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import RecordUtil from '@/api/record'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -196,22 +198,26 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   return acc
 }, {})
 
+var projects = []
+var schools = []
+var subjects = []
+
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
+    // statusFilter(status) {
+    //   const statusMap = {
+    //     published: 'success',
+    //     draft: 'info',
+    //     deleted: 'danger'
+    //   }
+    //   return statusMap[status]
+    // },
+    // typeFilter(type) {
+    //   return calendarTypeKeyValue[type]
+    // }
   },
   data() {
     return {
@@ -222,22 +228,19 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        schoolName: '武汉大学',
-        subjectName: '',
-        subjectCode: "",
-        teacherName: '',
-        taskName: '',
         projectName: '',
+        schoolName: '',
+        subjectName: '',
         // importance: undefined,
         // title: undefined,
         // type: undefined,
         // sort: '+id'
       },
       temp: {
-        id: 1,
-        schoolName: '武汉大学',
+        //id: undefined,
+        schoolName: '',
         subjectName: '',
-        subjectCode: "",
+        subjectCode: '',
         teacherName: '',
         taskName: '',
         projectName: '',
@@ -259,15 +262,12 @@ export default {
       pvData: [],
       rules: {
         //数据项的约束
-        schoolName:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        subjectName:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        subjectCode:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        teacherName:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        taskName:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        projectName:[{ required: true, message: 'title is required', trigger: 'blur' }],
-        // type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        // title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        schoolName:[{ required: true, message: '学校不能为空', trigger: 'blur' }],
+        subjectName:[{ required: true, message: '专业名称不能为空', trigger: 'blur' }],
+        subjectCode:[{ required: true, message: '专业代码不能为空', trigger: 'blur' }],
+        teacherName:[{ required: true, message: '导师名称不能为空', trigger: 'blur' }],
+        taskName:[{ required: true, message: '课题名称不能为空', trigger: 'blur' }],
+        projectName:[{ required: true, message: '项目名称不能为空', trigger: 'blur' }],
       },
       downloadLoading: false
     }
@@ -276,17 +276,35 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
+    init(){
+      RecordUtil.listProjects().then(response=>{
+        this.projects=response.extra.projects
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
       })
+    },
+
+    getList() {
+      this.listLoading = true,
+      RecordUtil.searchByCombination(this.listQuery).then(response => {
+        this.list = response.extra.records
+        //this.total = esponse.extra.total
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+
+      // fetchList(this.listQuery).then(response => {
+      //   this.list = response.data.items
+      //   this.total = response.data.total
+
+      //   // Just to simulate the time of the request
+      //   setTimeout(() => {
+      //     this.listLoading = false
+      //   }, 1.5 * 1000)
+      // })
+
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -299,20 +317,23 @@ export default {
       })
       row.status = status
     },
+
     sortChange(data) {
       const { prop, order } = data
       if (prop === 'id') {
         this.sortByID(order)
       }
     },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
+
+    // sortByID(order) {
+    //   if (order === 'ascending') {
+    //     this.listQuery.sort = '+id'
+    //   } else {
+    //     this.listQuery.sort = '-id'
+    //   }
+    //   this.handleFilter()
+    // },
+    
     resetTemp() {
       this.temp = {
         id: undefined,
@@ -324,6 +345,7 @@ export default {
         type: ''
       }
     },
+
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -332,6 +354,7 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -340,6 +363,7 @@ export default {
           createArticle(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
+
             this.$notify({
               title: 'Success',
               message: '添加成功',
@@ -350,6 +374,7 @@ export default {
         }
       })
     },
+
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.temp.timestamp = new Date(this.temp.timestamp)
@@ -393,20 +418,20 @@ export default {
         this.dialogPvVisible = true
       })
     },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
+    // handleDownload() {
+    //   this.downloadLoading = true
+    //   import('@/vendor/Export2Excel').then(excel => {
+    //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+    //     const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+    //     const data = this.formatJson(filterVal)
+    //     excel.export_json_to_excel({
+    //       header: tHeader,
+    //       data,
+    //       filename: 'table-list'
+    //     })
+    //     this.downloadLoading = false
+    //   })
+    // },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -416,10 +441,10 @@ export default {
         }
       }))
     },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
+    // getSortClass: function(key) {
+    //   const sort = this.listQuery.sort
+    //   return sort === `+${key}` ? 'ascending' : 'descending'
+    // }
   }
 }
 </script>
