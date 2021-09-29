@@ -1,6 +1,6 @@
-import request from '@/utils/request'
+import request from '@/utils/request-backend'
 
-const BaseUrl = 'localhost:8080/record'
+const BaseUrl = '/record'
 
 function deleteRecord(id) {
     return request({

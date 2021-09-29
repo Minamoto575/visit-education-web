@@ -1,6 +1,7 @@
-import request from '@/utils/request'
+import request from '@/utils/request-backend'
+import axios from 'axios'
 
-const BaseUrl = 'localhost:8080/admin'
+const BaseUrl = '/admin'
 
 function login(data) {
     return request({
