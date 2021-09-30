@@ -6,10 +6,11 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  introduction: '',
-  roles: []
+  introduction: '???',
+  roles: ['admin']
 }
 
+//事件
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
@@ -28,18 +29,22 @@ const mutations = {
   }
 }
 
+//类似mutations 通过dispatch提交 支持异步
+
 const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ name: username.trim(), password: password }).then(response => {
-        const token=response.extra.token;
+        const token = response.extra.token
+        console.log(token);
         commit('SET_TOKEN', token)
+        commit('SET_NAME',response.extra.adminName)
+        
         setToken(token)
         resolve()
       }).catch(error => {
-        debugger
         console.log(error);
         reject(error)
       })
@@ -53,7 +58,7 @@ const actions = {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('验证失败，请重新登录')
         }
 
         const { roles, name, avatar, introduction } = data

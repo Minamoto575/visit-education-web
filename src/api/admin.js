@@ -1,4 +1,4 @@
-import request from '@/utils/request-backend'
+import request from '@/utils/request'
 import axios from 'axios'
 
 const BaseUrl = '/admin'
