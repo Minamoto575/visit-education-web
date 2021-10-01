@@ -36,7 +36,7 @@ function mockXHR() {
       let result = null
       if (respond instanceof Function) {
         const { body, type, url } = options
-        // https://expressjs.com/en/4x/api.html#req
+        // https://expressjs.com/en/4x/api.html#
         result = respond({
           method: type,
           body: JSON.parse(body),

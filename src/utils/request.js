@@ -9,14 +9,13 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   //baseURL:"http://localhost:8080",
   timeout: 5000, // request timeout
+  withCredentials:true, //允许携带cookies
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
-    
     // do something before request is sent
-
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -27,6 +26,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
+    debugger
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -57,24 +57,26 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
+      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      //   // to re-login
+      //   MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', '确认退出', {
+      //     confirmButtonText: '重新登录',
+      //     cancelButtonText: '取消',
+      //     type: 'warning'
+      //   }).then(() => {
+      //     store.dispatch('user/resetToken').then(() => {
+      //       location.reload()
+      //     })
+      //   })
+      // }
+
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
+    //debugger
     console.log('err' + error) // for debug
     Message({
       message: error.message,
