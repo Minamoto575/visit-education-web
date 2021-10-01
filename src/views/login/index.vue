@@ -63,8 +63,16 @@
         type="primary"
         style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="handleLogin"
-        >登录</el-button
-      >
+        >登录
+      </el-button>
+
+      <!-- <el-button
+        :loading="loading"
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        @click.native.prevent="handleLogin"
+        >游客
+      </el-button> -->
 
       <div style="position: relative">
         <!-- <div class="tips">
@@ -96,7 +104,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 import SocialSign from "./components/SocialSignin";
-import AdminAPI from "@/api/admin";
+import { SUCCESS } from 'dropzone';
 
 export default {
   name: "Login",
@@ -184,7 +192,13 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              console.log(this.otherQuery);
+              //this.$router.push('/')
               this.loading = false
+              this.$message({
+                message:"登录成功",
+                type:SUCCESS
+              })
             })
             .catch(() => {
               this.loading = false
@@ -203,24 +217,6 @@ export default {
         return acc;
       }, {});
     },
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   },
 };
 </script>
