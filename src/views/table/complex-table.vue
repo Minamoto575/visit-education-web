@@ -12,44 +12,52 @@
 
       <!-- 组合搜索栏 -->
       <el-select
-        v-model="listQuery.importance"
-        placeholder="Imp"
+        v-model="listQuery.projectName"
+        placeholder="项目名称"
         clearable
         style="width: 200px; margin-right: 10px"
         class="filter-item"
+        @change="projectChanged"
       >
         <el-option
-          v-for="item in importanceOptions"
+          v-for="item in projectList"
           :key="item"
           :label="item"
           :value="item"
         />
       </el-select>
+
       <el-select
-        v-model="listQuery.type"
-        placeholder="Type"
+        v-model="listQuery.schoolName"
+        placeholder="学校名称"
         clearable
+        :disabled="listQuery.projectName===''"
         class="filter-item"
         style="width: 200px; margin-right: 10px"
+        @change="schoolChanged"
       >
         <el-option
-          v-for="item in calendarTypeOptions"
-          :key="item.key"
-          :label="item.display_name + '(' + item.key + ')'"
-          :value="item.key"
+          v-for="item in schoolList"
+          :key="item"
+          :label="item"
+          :value="item"
         />
       </el-select>
+
       <el-select
-        v-model="listQuery.sort"
-        style="width: 200px; margin-right: 10px"
+        v-model="listQuery.subjectName"
+        placeholder="学科名称"
+        clearable
+        :disabled="listQuery.schoolName===''"
+        disabele
         class="filter-item"
-        @change="handleFilter"
+        style="width: 200px; margin-right: 10px"
       >
         <el-option
-          v-for="item in sortOptions"
-          :key="item.key"
-          :label="item.label"
-          :value="item.key"
+          v-for="item in subjectList"
+          :key="item"
+          :label="item"
+          :value="item"
         />
       </el-select>
 
@@ -282,33 +290,13 @@
 
 <script>
 import UploadExcelComponent from "@/components/UploadExcel/index.vue";
-import {
-  fetchList,
-  fetchPv,
-  createArticle,
-  updateArticle,
-} from "@/api/article";
-import RecordUtil from "@/api/record";
+import RecordAPI from "@/api/record";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import data from '../pdf/content';
 
-const calendarTypeOptions = [
-  { key: "CN", display_name: "China" },
-  { key: "US", display_name: "USA" },
-  { key: "JP", display_name: "Japan" },
-  { key: "EU", display_name: "Eurozone" },
-];
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
-
-var projects = [];
-var schools = [];
-var subjects = [];
+//组合搜索栏选项
 
 export default {
   name: "ComplexTable",
@@ -329,6 +317,9 @@ export default {
   },
   data() {
     return {
+      projectList: [],
+      schoolList: [],
+      subjectList: [],
       tableKey: 0,
       list: null,
       total: 0,
@@ -336,13 +327,14 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        // projectName: '',
-        // schoolName: '',
-        // subjectName: '',
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: "+id",
+        teacherName: "",
+        projectName: "",
+        schoolName: "",
+        subjectName: "",
+        // importance: undefined,
+        // title: undefined,
+        // type: undefined,
+        // sort: "+id",
       },
       temp: {
         //id: undefined,
@@ -393,37 +385,40 @@ export default {
     };
   },
   created() {
+    RecordAPI.listProjects().then((response) => {
+      this.projectList = response.extra.projects;
+    });
     this.getList();
   },
   methods: {
     init() {
-      RecordUtil.listProjects().then((response) => {
-        this.projects = response.extra.projects;
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
+      // RecordUtil.listProjects().then((response) => {
+      //   this.projects = response.extra.projects;
+      //   setTimeout(() => {
+      //     this.listLoading = false;
+      //   }, 1.5 * 1000);
+      // });
     },
 
     getList() {
       (this.listLoading = true),
-        // RecordUtil.searchByCombination(this.listQuery).then(response => {
-        //   this.list = response.extra.records
-        //   //this.total = esponse.extra.total
-        //   setTimeout(() => {
-        //     this.listLoading = false
-        //   }, 1.5 * 1000)
-        // })
-
-        fetchList(this.listQuery).then((response) => {
-          this.list = response.data.items;
-          this.total = response.data.total;
-
-          // Just to simulate the time of the request
+        RecordUtil.searchByCombination(this.listQuery).then((response) => {
+          this.list = response.extra.records;
+          this.total = esponse.extra.total;
           setTimeout(() => {
             this.listLoading = false;
           }, 1.5 * 1000);
         });
+
+      // fetchList(this.listQuery).then((response) => {
+      //   this.list = response.data.items;
+      //   this.total = response.data.total;
+
+      //   // Just to simulate the time of the request
+      //   setTimeout(() => {
+      //     this.listLoading = false;
+      //   }, 1.5 * 1000);
+      // });
     },
     handleFilter() {
       this.listQuery.page = 1;
@@ -604,6 +599,39 @@ export default {
       // this.tableData = results
       // this.tableHeader = header
     },
+    projectChanged(value) {
+      this.listQuery.schoolName=''
+      this.listQuery.subjectName=''
+      this.subjectList = [];
+
+      if(value!==null){
+        var data={
+          projectName:value
+        };
+        RecordAPI.listSchools(data).then((response)=>{
+          this.schoolList=response.extra.schools;
+        })
+      }else{
+        this.schoolList = [];
+      }
+    },
+    schoolChanged(value) {
+      this.listQuery.subjectName=''
+      var projectName = this.listQuery.projectName
+
+      if(value!==null){
+        var data={
+          projectName:projectName,
+          schoolName:value
+        }
+        RecordAPI.listSujects(data).then((response)=>{
+          this.subjectList=response.extra.subjects;
+        })
+      }else{
+        this.subjectList=[];
+      }
+    },
+    
   },
 };
 </script>

@@ -18,11 +18,11 @@ function postRecrod(data) {
     })
 }
 
-function searchByTeacherName(name) {
+function searchByTeacherName(data) {
     return request({
         url: BaseUrl + '/search',
-        method: 'get',
-        params: {name}
+        method: 'post',
+        data
     })
 }
 
@@ -48,19 +48,19 @@ function listProjects() {
     })
 }
 
-function listSchools(subject) {
+function listSchools(data) {
     return request({
         url: BaseUrl + '/search/school',
-        method: 'get',
-        params: {subject}
+        method: 'post',
+        data
     })
 }
 
-function listSujects(subject,school) {
+function listSujects(data) {
     return request({
         url: BaseUrl + '/search/subject',
-        method: 'get',
-        params: {subject}&{school}
+        method: 'post',
+        data
     })
 }
 
