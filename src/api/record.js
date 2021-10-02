@@ -20,7 +20,7 @@ function postRecrod(data) {
 
 function searchByTeacherName(data) {
     return request({
-        url: BaseUrl + '/search',
+        url: BaseUrl + '/search/teacher',
         method: 'post',
         data
     })

@@ -7,8 +7,19 @@
         placeholder="导师名称"
         style="width: 200px; margin-right: 10px"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
+        @keyup.enter.native="listByTeacher"
       />
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        style="margin-right: 10px"
+        icon="el-icon-search"
+        :disabled="this.listQuery.teacherName===''"
+        @click="listByTeacher"
+      >
+        搜索
+      </el-button>
 
       <!-- 组合搜索栏 -->
       <el-select
@@ -31,7 +42,7 @@
         v-model="listQuery.schoolName"
         placeholder="学校名称"
         clearable
-        :disabled="listQuery.projectName===''"
+        :disabled="listQuery.projectName === ''"
         class="filter-item"
         style="width: 200px; margin-right: 10px"
         @change="schoolChanged"
@@ -48,7 +59,7 @@
         v-model="listQuery.subjectName"
         placeholder="学科名称"
         clearable
-        :disabled="listQuery.schoolName===''"
+        :disabled="listQuery.schoolName === ''"
         disabele
         class="filter-item"
         style="width: 200px; margin-right: 10px"
@@ -65,11 +76,13 @@
         v-waves
         class="filter-item"
         type="primary"
+        :disabled="this.listQuery.projectName===''||this.listQuery.schooletName===''||this.listQuery.subjectName===''"
         icon="el-icon-search"
-        @click="handleFilter"
+        @click="listByCombination"
       >
         搜索
       </el-button>
+
       <el-button
         class="filter-item"
         style="margin-left: 10px"
@@ -79,6 +92,7 @@
       >
         添加
       </el-button>
+      <!-- excle导入 -->
       <upload-excel-component
         :loading="downloadLoading"
         class="filter-item"
@@ -122,11 +136,13 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
+
       <el-table-column label="学校" min-width="10%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.schoolName }}</span>
         </template>
       </el-table-column>
+
       <el-table-column label="学科专业名称" min-width="10%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.subjectName }}</span>
@@ -294,7 +310,7 @@ import RecordAPI from "@/api/record";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import data from '../pdf/content';
+import data from "../pdf/content";
 
 //组合搜索栏选项
 
@@ -323,18 +339,14 @@ export default {
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
-        teacherName: "",
+        teacherName: "111",
         projectName: "",
         schoolName: "",
         subjectName: "",
-        // importance: undefined,
-        // title: undefined,
-        // type: undefined,
-        // sort: "+id",
       },
       temp: {
         //id: undefined,
@@ -385,45 +397,57 @@ export default {
     };
   },
   created() {
+    //获取所有项目名称
     RecordAPI.listProjects().then((response) => {
       this.projectList = response.extra.projects;
     });
-    this.getList();
   },
   methods: {
-    init() {
-      // RecordUtil.listProjects().then((response) => {
-      //   this.projects = response.extra.projects;
-      //   setTimeout(() => {
-      //     this.listLoading = false;
-      //   }, 1.5 * 1000);
-      // });
-    },
+    init() {},
 
-    getList() {
-      (this.listLoading = true),
-        RecordUtil.searchByCombination(this.listQuery).then((response) => {
-          this.list = response.extra.records;
-          this.total = esponse.extra.total;
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 1.5 * 1000);
-        });
+    // getList() {
+    //   this.listLoading = true;
+    //   RecordAPI.searchByCombination(this.listQuery).then((response) => {
+    //     this.list = response.extra.records;
+    //     this.total = response.extra.total;
+    //   });
+    //   this.listLoading = false;
+    // },
 
-      // fetchList(this.listQuery).then((response) => {
-      //   this.list = response.data.items;
-      //   this.total = response.data.total;
-
-      //   // Just to simulate the time of the request
-      //   setTimeout(() => {
-      //     this.listLoading = false;
-      //   }, 1.5 * 1000);
-      // });
-    },
-    handleFilter() {
+    //组合查询
+    listByCombination() {
       this.listQuery.page = 1;
-      this.getList();
+      this.listLoading = true;
+      RecordAPI.searchByCombination(this.listQuery).then((response) => {
+        this.list = response.extra.records;
+        this.total = response.extra.total;
+      });
+      this.listLoading = false;
     },
+    //根据教师名称模糊查询
+    listByTeacher() {
+      this.listQuery.page = 1;
+      this.listLoading = true;
+      RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
+        this.list = response.extra.records;
+        this.total = response.extra.total;
+      });
+      this.listLoading = false;
+    },
+
+    // handleFilter() {
+    //   this.listQuery.page = 1;
+    //   this.getList();
+    // },
+
+    // handleSearchByTeacher() {
+    //   this.listQuery.page = 1;
+    //   this.searchByTeacherName;
+    // },
+    // handleSearchByCombination() {
+    //   this.listQuery.page = 1;
+    //   this.getList();
+    // },
     handleModifyStatus(row, status) {
       this.$message({
         message: "操作Success",
@@ -437,15 +461,6 @@ export default {
       if (prop === "id") {
         this.sortByID(order);
       }
-    },
-
-    sortByID(order) {
-      if (order === "ascending") {
-        this.listQuery.sort = "+id";
-      } else {
-        this.listQuery.sort = "-id";
-      }
-      this.handleFilter();
     },
 
     resetTemp() {
@@ -582,7 +597,7 @@ export default {
       return false;
     },
     handleSuccess({ results, header }) {
-      RecordUtil.uploadExcel(results).then((response) => {
+      RecordAPI.uploadExcel(results).then((response) => {
         if (response.code == 200) {
           this.$message({
             message: "上传成功！",
@@ -600,38 +615,37 @@ export default {
       // this.tableHeader = header
     },
     projectChanged(value) {
-      this.listQuery.schoolName=''
-      this.listQuery.subjectName=''
+      this.listQuery.schoolName = "";
+      this.listQuery.subjectName = "";
       this.subjectList = [];
 
-      if(value!==null){
-        var data={
-          projectName:value
+      if (value !== null) {
+        var data = {
+          projectName: value,
         };
-        RecordAPI.listSchools(data).then((response)=>{
-          this.schoolList=response.extra.schools;
-        })
-      }else{
+        RecordAPI.listSchools(data).then((response) => {
+          this.schoolList = response.extra.schools;
+        });
+      } else {
         this.schoolList = [];
       }
     },
     schoolChanged(value) {
-      this.listQuery.subjectName=''
-      var projectName = this.listQuery.projectName
+      this.listQuery.subjectName = "";
+      var projectName = this.listQuery.projectName;
 
-      if(value!==null){
-        var data={
-          projectName:projectName,
-          schoolName:value
-        }
-        RecordAPI.listSujects(data).then((response)=>{
-          this.subjectList=response.extra.subjects;
-        })
-      }else{
-        this.subjectList=[];
+      if (value !== null) {
+        var data = {
+          projectName: projectName,
+          schoolName: value,
+        };
+        RecordAPI.listSujects(data).then((response) => {
+          this.subjectList = response.extra.subjects;
+        });
+      } else {
+        this.subjectList = [];
       }
     },
-    
   },
 };
 </script>
