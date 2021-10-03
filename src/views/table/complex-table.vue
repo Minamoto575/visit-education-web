@@ -15,7 +15,7 @@
         type="primary"
         style="margin-right: 10px"
         icon="el-icon-search"
-        :disabled="this.listQuery.teacherName===''"
+        :disabled="this.listQuery.teacherName === ''"
         @click="listByTeacher"
       >
         搜索
@@ -76,7 +76,11 @@
         v-waves
         class="filter-item"
         type="primary"
-        :disabled="this.listQuery.projectName===''||this.listQuery.schooletName===''||this.listQuery.subjectName===''"
+        :disabled="
+          this.listQuery.projectName === '' ||
+          this.listQuery.schooletName === '' ||
+          this.listQuery.subjectName === ''
+        "
         icon="el-icon-search"
         @click="listByCombination"
       >
@@ -110,6 +114,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
+        :disabled="this.list === null"
       >
         导出
       </el-button>
@@ -234,17 +239,8 @@
         label-width="140px"
         style="width: 400px; margin-left: 50px"
       >
-        <!-- <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item> -->
-
         <el-form-item label="学校" prop="schoolName">
-          <el-input v-model="temp.schooletName" />
+          <el-input v-model="temp.schoolName" />
         </el-form-item>
         <el-form-item label="学科专业名称" prop="subjectName">
           <el-input v-model="temp.subjectName" />
@@ -261,17 +257,6 @@
         <el-form-item label="项目名称" prop="projectName">
           <el-input v-model="temp.projectName" />
         </el-form-item>
-        <!-- <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false"> 取消 </el-button>
@@ -297,7 +282,7 @@
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogPvVisible = false"
-          >Confirm</el-button
+          >确认</el-button
         >
       </span>
     </el-dialog>
@@ -337,13 +322,13 @@ export default {
       schoolList: [],
       subjectList: [],
       tableKey: 0,
-      list: null,
+      list: [],
       total: 0,
       listLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
-        teacherName: "111",
+        teacherName: "",
         projectName: "",
         schoolName: "",
         subjectName: "",
@@ -356,13 +341,6 @@ export default {
         teacherName: "",
         taskName: "",
         projectName: "",
-        // id: undefined,
-        // importance: 1,
-        // remark: '',
-        // timestamp: new Date(),
-        // title: '',
-        // type: '',
-        // status: 'published'
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -426,13 +404,15 @@ export default {
     },
     //根据教师名称模糊查询
     listByTeacher() {
-      this.listQuery.page = 1;
-      this.listLoading = true;
-      RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
-        this.list = response.extra.records;
-        this.total = response.extra.total;
-      });
-      this.listLoading = false;
+      if (this.listQuery.teacherName !== "") {
+        this.listQuery.page = 1;
+        this.listLoading = true;
+        RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
+          this.list = response.extra.records;
+          this.total = response.extra.total;
+        });
+        this.listLoading = false;
+      }
     },
 
     // handleFilter() {
@@ -440,14 +420,6 @@ export default {
     //   this.getList();
     // },
 
-    // handleSearchByTeacher() {
-    //   this.listQuery.page = 1;
-    //   this.searchByTeacherName;
-    // },
-    // handleSearchByCombination() {
-    //   this.listQuery.page = 1;
-    //   this.getList();
-    // },
     handleModifyStatus(row, status) {
       this.$message({
         message: "操作Success",
@@ -465,13 +437,19 @@ export default {
 
     resetTemp() {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: "",
-        timestamp: new Date(),
-        title: "",
-        status: "published",
-        type: "",
+        teschoolName: "",
+        subjectName: "",
+        subjectCode: "",
+        teacherName: "",
+        taskName: "",
+        projectName: "",
+        //id: undefined,
+        // importance: 1,
+        // remark: "",
+        // timestamp: new Date(),
+        // title: "",
+        // status: "published",
+        // type: "",
       };
     },
 
@@ -487,18 +465,32 @@ export default {
     createData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
-          this.temp.author = "vue-element-admin";
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp);
-            this.dialogFormVisible = false;
-
-            this.$notify({
-              title: "Success",
-              message: "添加成功",
-              type: "success",
-              duration: 2000,
-            });
+          //this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
+          //this.temp.author = "vue-element-admin";
+          RecordAPI.postRecrod(this.temp).then((response) => {
+            if (response.code === 200) {
+              this.list.unshift(this.temp);
+              this.dialogFormVisible = false;
+              this.$notify({
+                title: "Success",
+                message: "添加成功",
+                type: "success",
+                duration: 1500,
+              });
+            } else if (response.code === 202) {
+              this.$message({
+                type:"warning",
+                message:"已存在该记录",
+                duration:2000
+              })
+            } else {
+              this.$notify({
+                title: "Fail",
+                message: "添加失败",
+                type: "error",
+                duration: 2000,
+              });
+            }
           });
         }
       });
@@ -584,7 +576,7 @@ export default {
       return sort === `+${key}` ? "ascending" : "descending";
     },
     beforeUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 1;
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (isLt2M) {
         return true;
@@ -614,6 +606,8 @@ export default {
       // this.tableData = results
       // this.tableHeader = header
     },
+
+    //组合搜索栏项目发送改变触发
     projectChanged(value) {
       this.listQuery.schoolName = "";
       this.listQuery.subjectName = "";
@@ -630,6 +624,8 @@ export default {
         this.schoolList = [];
       }
     },
+
+    //组合搜索栏学校发生改变触发
     schoolChanged(value) {
       this.listQuery.subjectName = "";
       var projectName = this.listQuery.projectName;
