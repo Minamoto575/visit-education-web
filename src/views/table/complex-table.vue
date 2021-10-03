@@ -96,17 +96,15 @@
       >
         添加
       </el-button>
-      <!-- excle导入 -->
+      <!-- excel导入 -->
       <upload-excel-component
         :loading="downloadLoading"
         class="filter-item"
         style="margin-left: -5px; margin-right: 10px"
-        on-success="uploadSuccess"
-        before-upload="beforeUpload"
+        :on-success="uploadSuccess"
+        :before-upload="beforeUpload"
       />
-      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-upload" @click="handleUpload">
-        导入
-      </el-button> -->
+      <!-- excel导出 -->
       <el-button
         v-waves
         :loading="downloadLoading"
@@ -174,31 +172,6 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column label="Imp" width="80px">
-        <template slot-scope="{row}">
-          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
-        </template>
-      </el-table-column> -->
-
-      <!-- <el-table-column label="Readings" align="center" width="95">
-        <template slot-scope="{row}">
-          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
-          <span v-else>0</span>
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column label="Status" class-name="status-col" width="100">
-        <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column> -->
-
       <el-table-column
         label="操作"
         align="center"
@@ -206,12 +179,16 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row, $index }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button
+            type="primary"
+            size="medium"
+            @click="handleUpdate(row, $index)"
+          >
             修改
           </el-button>
           <el-button
             v-if="row.status != 'deleted'"
-            size="mini"
+            size="medium"
             type="danger"
             @click="handleDelete(row, $index)"
           >
@@ -221,13 +198,13 @@
       </el-table-column>
     </el-table>
 
-    <pagination
+    <!-- <pagination
       v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="getList"
-    />
+    /> -->
 
     <!-- 修改栏、添加栏 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -334,7 +311,7 @@ export default {
         subjectName: "",
       },
       temp: {
-        //id: undefined,
+        id: undefined,
         schoolName: "",
         subjectName: "",
         subjectCode: "",
@@ -372,6 +349,7 @@ export default {
         ],
       },
       downloadLoading: false,
+      ModifyIndex: -1,
     };
   },
   created() {
@@ -437,19 +415,13 @@ export default {
 
     resetTemp() {
       this.temp = {
+        id: -1,
         teschoolName: "",
         subjectName: "",
         subjectCode: "",
         teacherName: "",
         taskName: "",
         projectName: "",
-        //id: undefined,
-        // importance: 1,
-        // remark: "",
-        // timestamp: new Date(),
-        // title: "",
-        // status: "published",
-        // type: "",
       };
     },
 
@@ -479,10 +451,10 @@ export default {
               });
             } else if (response.code === 202) {
               this.$message({
-                type:"warning",
-                message:"已存在该记录",
-                duration:2000
-              })
+                type: "warning",
+                message: "已存在该记录",
+                duration: 2000,
+              });
             } else {
               this.$notify({
                 title: "Fail",
@@ -496,9 +468,9 @@ export default {
       });
     },
 
-    handleUpdate(row) {
+    handleUpdate(row, index) {
+      this.ModifyIndex = index; //当前修改的row
       this.temp = Object.assign({}, row); // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -509,29 +481,60 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
-          tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex((v) => v.id === this.temp.id);
-            this.list.splice(index, 1, this.temp);
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "修改成功",
-              type: "success",
-              duration: 2000,
-            });
+          RecordAPI.updateRecord(tempData).then((response) => {
+            if (response.code === 200) {
+              this.dialogFormVisible = false;
+              this.list[this.ModifyIndex] = Object.assign({}, this.temp);
+              console.log(this.list[this.ModifyIndex]);
+              this.tableKey = Math.random();
+              this.$notify({
+                title: "Success",
+                message: "修改成功",
+                type: "success",
+                duration: 2000,
+              });
+            } else {
+              this.$notify({
+                title: "Fail",
+                message: "修改失败",
+                type: "error",
+                duration: 2000,
+              });
+            }
           });
         }
       });
     },
+    //删除某条记录
     handleDelete(row, index) {
-      this.$notify({
-        title: "Success",
-        message: "删除成功",
-        type: "success",
-        duration: 2000,
-      });
-      this.list.splice(index, 1);
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          RecordAPI.deleteRecord(row.id).then((response) => {
+            if (response.code === 200) {
+              this.$notify({
+                title: "Success",
+                message: "删除成功",
+                type: "success",
+                duration: 2000,
+              });
+              this.list.splice(index, 1);
+            } else {
+              this.$notify({
+                title: "Fail",
+                message: "删除失败",
+                type: "error",
+                duration: 2000,
+              });
+            }
+          });
+        })
+        .catch(() => {
+          
+        });
     },
     handleFetchPv(pv) {
       fetchPv(pv).then((response) => {
@@ -641,6 +644,37 @@ export default {
       } else {
         this.subjectList = [];
       }
+    },
+    //导入excel前的验证
+    beforeUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (isLt2M) {
+        return true;
+      }
+      this.$message({
+        message: "文件大小不能超过2M！",
+        type: "warning",
+      });
+      return false;
+    },
+    // excel上传
+    uploadSuccess(results) {
+      RecordAPI.uploadExcel(results).then((response) => {
+        if (response.code == 200) {
+          this.$message({
+            message: "上传成功！",
+            type: "success",
+          });
+        } else {
+          this.$message({
+            message: "上传失败！",
+            type: "warning",
+          });
+        }
+      });
+
+      // this.tableData = results
+      // this.tableHeader = header
     },
   },
 };
