@@ -73,11 +73,12 @@ function updateRecord(data) {
 }
 
 function uploadExcel(data){
-    
     return request({
         url: BaseUrl + '/upload/excel',
         method: 'post',
-        data:data
+        contentType:false,
+        processData:false,
+        data: data
     })
 }
 

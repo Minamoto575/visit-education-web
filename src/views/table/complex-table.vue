@@ -98,7 +98,7 @@
       </el-button>
       <!-- excel导入 -->
       <upload-excel-component
-        :loading="downloadLoading"
+        :loading="upLoading"
         class="filter-item"
         style="margin-left: -5px; margin-right: 10px"
         :on-success="uploadSuccess"
@@ -350,13 +350,12 @@ export default {
       },
       downloadLoading: false,
       ModifyIndex: -1,
+      upLoading: false,
     };
   },
   created() {
     //获取所有项目名称
-    RecordAPI.listProjects().then((response) => {
-      this.projectList = response.extra.projects;
-    });
+    this.listProjects();
   },
   methods: {
     init() {},
@@ -377,8 +376,20 @@ export default {
       RecordAPI.searchByCombination(this.listQuery).then((response) => {
         this.list = response.extra.records;
         this.total = response.extra.total;
+        if (this.list.length === 0) {
+          this.$message({
+            message: "未找到相应的记录",
+            type: "info",
+          });
+        }
       });
       this.listLoading = false;
+    },
+    //查询系统所有项目
+    listProjects() {
+      RecordAPI.listProjects().then((response) => {
+        this.projectList = response.extra.projects;
+      });
     },
     //根据教师名称模糊查询
     listByTeacher() {
@@ -388,6 +399,12 @@ export default {
         RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
           this.list = response.extra.records;
           this.total = response.extra.total;
+          if (this.list.length === 0) {
+            this.$message({
+              message: "未找到相应的记录",
+              type: "info",
+            });
+          }
         });
         this.listLoading = false;
       }
@@ -415,7 +432,7 @@ export default {
 
     resetTemp() {
       this.temp = {
-        id: -1,
+        id: undefined,
         teschoolName: "",
         subjectName: "",
         subjectCode: "",
@@ -437,12 +454,17 @@ export default {
     createData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          //this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
-          //this.temp.author = "vue-element-admin";
           RecordAPI.postRecrod(this.temp).then((response) => {
             if (response.code === 200) {
+              this.temp.id = response.extra.id;
               this.list.unshift(this.temp);
               this.dialogFormVisible = false;
+              //重置组合搜索栏信息
+              this.listProjects();
+              this.listQuery.subjectName = "";
+              this.listQuery.projectName = "";
+              this.listQuery.schoolName = "";
+              
               this.$notify({
                 title: "Success",
                 message: "添加成功",
@@ -486,7 +508,13 @@ export default {
               this.dialogFormVisible = false;
               this.list[this.ModifyIndex] = Object.assign({}, this.temp);
               console.log(this.list[this.ModifyIndex]);
+              //this.tableKey = Math.random();
               this.tableKey = Math.random();
+              //重置组合搜索栏信息
+              this.listProjects();
+              this.listQuery.subjectName = "";
+              this.listQuery.projectName = "";
+              this.listQuery.schoolName = "";
               this.$notify({
                 title: "Success",
                 message: "修改成功",
@@ -510,7 +538,7 @@ export default {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "info",
       })
         .then(() => {
           RecordAPI.deleteRecord(row.id).then((response) => {
@@ -522,6 +550,14 @@ export default {
                 duration: 2000,
               });
               this.list.splice(index, 1);
+              //列表所有均被删除
+              if (this.list.length === 0) {
+                //重置组合搜索栏信息
+                this.listProjects();
+                this.listQuery.subjectName = "";
+                this.listQuery.projectName = "";
+                this.listQuery.schoolName = "";
+              }
             } else {
               this.$notify({
                 title: "Fail",
@@ -532,9 +568,7 @@ export default {
             }
           });
         })
-        .catch(() => {
-          
-        });
+        .catch(() => {});
     },
     handleFetchPv(pv) {
       fetchPv(pv).then((response) => {
@@ -578,38 +612,6 @@ export default {
       const sort = this.listQuery.sort;
       return sort === `+${key}` ? "ascending" : "descending";
     },
-    beforeUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (isLt2M) {
-        return true;
-      }
-
-      this.$message({
-        message: "文件大小不能超过2M！",
-        type: "warning",
-      });
-      return false;
-    },
-    handleSuccess({ results, header }) {
-      RecordAPI.uploadExcel(results).then((response) => {
-        if (response.code == 200) {
-          this.$message({
-            message: "上传成功！",
-            type: "success",
-          });
-        } else {
-          this.$message({
-            message: "上传失败！",
-            type: "warning",
-          });
-        }
-      });
-
-      // this.tableData = results
-      // this.tableHeader = header
-    },
-
     //组合搜索栏项目发送改变触发
     projectChanged(value) {
       this.listQuery.schoolName = "";
@@ -658,23 +660,16 @@ export default {
       return false;
     },
     // excel上传
-    uploadSuccess(results) {
-      RecordAPI.uploadExcel(results).then((response) => {
-        if (response.code == 200) {
-          this.$message({
-            message: "上传成功！",
-            type: "success",
-          });
-        } else {
-          this.$message({
-            message: "上传失败！",
-            type: "warning",
-          });
-        }
-      });
-
-      // this.tableData = results
-      // this.tableHeader = header
+    uploadSuccess({ results, header }) {
+      //重置组合搜索栏信息，导入或者删除可能导致其变化
+      this.listProjects();
+      this.listQuery.subjectName = "";
+      this.listQuery.projectName = "";
+      this.listQuery.schoolName = "";
+      //debugger
+      //console.log(results);
+      //this.list = results;
+      //this.resetListInfo()
     },
   },
 };

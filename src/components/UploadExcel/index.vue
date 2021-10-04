@@ -9,6 +9,7 @@
 
 <script>
 import XLSX from 'xlsx'
+import RecordAPI from "@/api/record";
 
 export default {
   props: {
@@ -87,9 +88,26 @@ export default {
           const header = this.getHeaderRow(worksheet)
           const results = XLSX.utils.sheet_to_json(worksheet)
           this.generateData({ header, results })
-          this.loading = false
           resolve()
         }
+        var data = new FormData();
+        data.append("file", rawFile);
+        RecordAPI.uploadExcel(data).then((response) => {
+          if (response.code == 200) {
+            this.$message({
+              message: "上传成功！",
+              type: "success",
+            });
+            this.loading=false;
+          } else {
+            this.$message({
+              message: "上传失败！",
+              type: "warning",
+            });
+            this.loading=false;
+          }
+        });
+        
         reader.readAsArrayBuffer(rawFile)
       })
     },
