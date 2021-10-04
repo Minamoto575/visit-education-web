@@ -127,7 +127,7 @@ export default {
     return {
       loginForm: {
         username: "admin",
-        password: "admin",
+        password: "111111",
       },
       loginRules: {
         username: [
@@ -190,17 +190,21 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
+            .then((response) => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               console.log(this.otherQuery);
               //this.$router.push('/')
               this.loading = false
               this.$message({
                 message:"登录成功",
-                type:SUCCESS
+                type:"success"
               })
             })
             .catch(() => {
+              this.$message({
+                message:"用户名或密码错误",
+                type:"error"
+              })
               this.loading = false
             })
         } else {

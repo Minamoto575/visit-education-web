@@ -26,8 +26,17 @@ function register(data) {
     })
 }
 
+function changePasswod(data) {
+    return request({
+        url: BaseUrl + '/changePassword',
+        method: 'post',
+        data
+    })
+}
+
 export default {
     login,
     logout,
-    register
+    register,
+    changePasswod,
 }

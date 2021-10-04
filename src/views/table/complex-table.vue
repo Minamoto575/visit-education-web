@@ -268,9 +268,9 @@
 import UploadExcelComponent from "@/components/UploadExcel/index.vue";
 import RecordAPI from "@/api/record";
 import waves from "@/directive/waves"; // waves directive
-import { parseTime } from "@/utils";
+//import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import data from "../pdf/content";
+//import data from "../pdf/content";
 
 //组合搜索栏选项
 
@@ -456,12 +456,7 @@ export default {
               this.temp.id = response.extra.id;
               this.list.unshift(this.temp);
               this.dialogFormVisible = false;
-              //重置组合搜索栏信息
-              this.listProjects();
-              this.listQuery.subjectName = "";
-              this.listQuery.projectName = "";
-              this.listQuery.schoolName = "";
-
+              this.resetCombinationSearch();
               this.$notify({
                 title: "Success",
                 message: "添加成功",
@@ -507,11 +502,7 @@ export default {
               console.log(this.list[this.ModifyIndex]);
               //this.tableKey = Math.random();
               this.tableKey = Math.random();
-              //重置组合搜索栏信息
-              this.listProjects();
-              this.listQuery.subjectName = "";
-              this.listQuery.projectName = "";
-              this.listQuery.schoolName = "";
+              this.resetCombinationSearch();
               this.$notify({
                 title: "Success",
                 message: "修改成功",
@@ -549,11 +540,7 @@ export default {
               this.list.splice(index, 1);
               //列表所有均被删除
               if (this.list.length === 0) {
-                //重置组合搜索栏信息
-                this.listProjects();
-                this.listQuery.subjectName = "";
-                this.listQuery.projectName = "";
-                this.listQuery.schoolName = "";
+                this.resetCombinationSearch();
               }
             } else {
               this.$notify({
@@ -649,14 +636,19 @@ export default {
       });
       return false;
     },
-    // excel上传
+
+    // excel上传成功
     uploadSuccess({ results, header }) {
-      //重置组合搜索栏信息，导入或者删除可能导致其变化
+      this.resetCombinationSearch();
+    },
+
+    //重置组合搜索栏信息，任何更新可能导致其变化
+    resetCombinationSearch(){
       this.listProjects();
       this.listQuery.subjectName = "";
       this.listQuery.projectName = "";
       this.listQuery.schoolName = "";
-    },
+    }
   },
 };
 </script>

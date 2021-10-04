@@ -1,9 +1,10 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, changePassword } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  id:undefined,
   name: '',
   avatar: '',
   introduction: '',
@@ -14,6 +15,9 @@ const state = {
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -38,9 +42,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ name: username.trim(), password: password }).then(response => {
         const token = response.extra.token
+        const id = response.extra.id
+        const name = response.extra.name
         commit('SET_TOKEN', token)
+        commit('SET_ID',id)
+        commit('SET_NAME',name)
         setToken(token)
-        resolve()
+        resolve(response)
       }).catch(error => {
         console.log(error);
         reject(error)
@@ -52,14 +60,14 @@ const actions = {
   getInfo({ commit }) {
     return new Promise((resolve) => {
       commit('SET_ROLES', ['admin'])
-      commit('SET_NAME', 'admin')
+      //commit('SET_NAME', 'admin')
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       commit('SET_INTRODUCTION', 'ILOVEWHU')
       resolve({
-        roles:['admin'],
-        name:'admin',
+        roles: ['admin'],
+        //name: 'admin',
         avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-        introduction:'ILOVEWHU'
+        introduction: 'ILOVEWHU'
       })
 
       // getInfo(state.token).then(response => {
@@ -89,7 +97,7 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout().then(() => {
+      logout().then((response) => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
@@ -97,8 +105,27 @@ const actions = {
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 
-        resolve()
+  //修改密码
+  changePassword({ commit, state, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      changePassword(data).then((response) => {
+        if (response.code === 200) {
+          commit('SET_TOKEN', '')
+          commit('SET_ROLES', [])
+          removeToken()
+          resetRouter()
+          // reset visited views and cached views
+          // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+          dispatch('tagsView/delAllViews', null, { root: true })
+        }
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
