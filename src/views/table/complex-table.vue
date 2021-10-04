@@ -98,7 +98,6 @@
       </el-button>
       <!-- excel导入 -->
       <upload-excel-component
-        :loading="upLoading"
         class="filter-item"
         style="margin-left: -5px; margin-right: 10px"
         :on-success="uploadSuccess"
@@ -112,7 +111,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
-        :disabled="this.list === null"
+        :disabled="this.list.length === 0"
       >
         导出
       </el-button>
@@ -133,7 +132,6 @@
         prop="id"
         align="center"
         min-width="5%"
-        :class-name="getSortClass('id')"
       >
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
@@ -350,7 +348,6 @@ export default {
       },
       downloadLoading: false,
       ModifyIndex: -1,
-      upLoading: false,
     };
   },
   created() {
@@ -464,7 +461,7 @@ export default {
               this.listQuery.subjectName = "";
               this.listQuery.projectName = "";
               this.listQuery.schoolName = "";
-              
+
               this.$notify({
                 title: "Success",
                 message: "添加成功",
@@ -579,38 +576,31 @@ export default {
     handleDownload() {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["timestamp", "title", "type", "importance", "status"];
+        const tHeader = ["总序号", "学校名称", "学科专业名称", "学科专业代码", "教师姓名","课题名称","项目名称"];
         const filterVal = [
-          "timestamp",
-          "title",
-          "type",
-          "importance",
-          "status",
+          "id",
+          "schoolName",
+          "subjectName",
+          "subjectCode",
+          "teacherName",
+          "taskName",
+          "projectName"
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: "table-list",
+          filename: "导出名单",
         });
         this.downloadLoading = false;
       });
     },
-    handleUpload() {},
     formatJson(filterVal) {
       return this.list.map((v) =>
         filterVal.map((j) => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
+          return v[j];
         })
       );
-    },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort;
-      return sort === `+${key}` ? "ascending" : "descending";
     },
     //组合搜索栏项目发送改变触发
     projectChanged(value) {
@@ -666,10 +656,6 @@ export default {
       this.listQuery.subjectName = "";
       this.listQuery.projectName = "";
       this.listQuery.schoolName = "";
-      //debugger
-      //console.log(results);
-      //this.list = results;
-      //this.resetListInfo()
     },
   },
 };
