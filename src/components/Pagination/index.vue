@@ -30,12 +30,12 @@ export default {
     },
     limit: {
       type: Number,
-      default: 20
+      default: 10
     },
     pageSizes: {
       type: Array,
       default() {
-        return [10, 20, 30, 50]
+        return [10,20,30]
       }
     },
     layout: {
@@ -75,7 +75,10 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.$emit('pagination', { page: this.currentPage, limit: val })
+      var curMax = Math.min(this.currentPage*this.pageSize,this.total);
+      var newPage = Math.ceil(curMax/val);
+      console.log(newPage);
+      this.$emit('pagination', { page: newPage, limit: val })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }

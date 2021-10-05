@@ -51,7 +51,7 @@
           :rules="rules"
           :model="admin"
           label-position="left"
-          label-width="140px"
+          label-width="100px"
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">

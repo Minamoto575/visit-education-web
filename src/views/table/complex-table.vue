@@ -7,7 +7,7 @@
         placeholder="导师名称"
         style="width: 200px; margin-right: 10px"
         class="filter-item"
-        @keyup.enter.native="listByTeacher"
+        @keyup.enter.native="handleListByTeacher"
       />
       <el-button
         v-waves
@@ -16,7 +16,7 @@
         style="margin-right: 10px"
         icon="el-icon-search"
         :disabled="this.listQuery.teacherName === ''"
-        @click="listByTeacher"
+        @click="handleListByTeacher"
       >
         搜索
       </el-button>
@@ -82,11 +82,12 @@
           this.listQuery.subjectName === ''
         "
         icon="el-icon-search"
-        @click="listByCombination"
+        @click="handleListByCombination"
       >
         搜索
       </el-button>
 
+      <!-- 添加记录 -->
       <el-button
         class="filter-item"
         style="margin-left: 10px"
@@ -96,6 +97,7 @@
       >
         添加
       </el-button>
+
       <!-- excel导入 -->
       <upload-excel-component
         class="filter-item"
@@ -103,6 +105,7 @@
         :on-success="uploadSuccess"
         :before-upload="beforeUpload"
       />
+
       <!-- excel导出 -->
       <el-button
         v-waves
@@ -117,6 +120,7 @@
       </el-button>
     </div>
 
+    <!-- 数据展示 -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -125,51 +129,51 @@
       fit
       highlight-current-row
       style="width: 100%"
-      @sort-change="sortChange"
     >
-      <el-table-column
-        label="序号"
-        prop="id"
-        align="center"
-        min-width="5%"
-      >
+      <el-table-column label="序号" prop="id" align="center" min-width="5%">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="学校" min-width="10%" align="center">
+      <el-table-column label="学校" min-width="8%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.schoolName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="学科专业名称" min-width="10%" align="center">
+      <el-table-column label="学科专业名称" min-width="12%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.subjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="学科专业代码" min-width="10%" align="center">
+      <el-table-column label="学科专业代码" min-width="6%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.subjectCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="导师姓名" min-width="10%" align="center">
+      <el-table-column label="导师姓名" min-width="8%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.teacherName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="课题名称" min-width="10%" align="center">
+      <el-table-column
+        label="课题名称"
+        min-width="14%"
+        align="center"
+        show-overflow-tooltip
+      >
         <template slot-scope="{ row }">
           <span>{{ row.taskName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="项目名称" min-width="10%" align="center">
+      <el-table-column label="项目名称" min-width="12%" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.projectName }}</span>
         </template>
       </el-table-column>
 
+      <!-- 操作栏 -->
       <el-table-column
         label="操作"
         align="center"
@@ -196,13 +200,14 @@
       </el-table-column>
     </el-table>
 
-    <!-- <pagination
+    <!-- 分页 -->
+    <pagination
       v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getList"
-    /> -->
+      @pagination="handlePagination"
+    />
 
     <!-- 修改栏、添加栏 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -227,7 +232,12 @@
           <el-input v-model="temp.teacherName" />
         </el-form-item>
         <el-form-item label="课题名称" prop="taskName">
-          <el-input v-model="temp.taskName" />
+          <el-input
+            v-model="temp.taskName"
+            type="textarea"
+            resize="none"
+            :autosize="{ minRows: 4, maxRows: 4 }"
+          />
         </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
           <el-input v-model="temp.projectName" />
@@ -243,24 +253,6 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table
-        :data="pvData"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false"
-          >确认</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -268,29 +260,13 @@
 import UploadExcelComponent from "@/components/UploadExcel/index.vue";
 import RecordAPI from "@/api/record";
 import waves from "@/directive/waves"; // waves directive
-//import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-//import data from "../pdf/content";
-
-//组合搜索栏选项
 
 export default {
   name: "ComplexTable",
   components: { Pagination, UploadExcelComponent },
   directives: { waves },
-  filters: {
-    // statusFilter(status) {
-    //   const statusMap = {
-    //     published: 'success',
-    //     draft: 'info',
-    //     deleted: 'danger'
-    //   }
-    //   return statusMap[status]
-    // },
-    // typeFilter(type) {
-    //   return calendarTypeKeyValue[type]
-    // }
-  },
+  filters: {},
   data() {
     return {
       projectList: [],
@@ -302,7 +278,7 @@ export default {
       listLoading: false,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         teacherName: "",
         projectName: "",
         schoolName: "",
@@ -317,16 +293,14 @@ export default {
         taskName: "",
         projectName: "",
       },
-      dialogFormVisible: false,
-      dialogStatus: "",
+      dialogFormVisible: false, //添加更改栏是否展示
+      dialogStatus: "", //修改 or  添加
       textMap: {
         update: "修改",
         create: "添加",
       },
-      dialogPvVisible: false,
-      pvData: [],
+      //数据项的约束
       rules: {
-        //数据项的约束
         schoolName: [
           { required: true, message: "学校不能为空", trigger: "blur" },
         ],
@@ -348,6 +322,7 @@ export default {
       },
       downloadLoading: false,
       ModifyIndex: -1,
+      presentedData: "", //展示组合搜索的数据  还是教师名称搜索的数据
     };
   },
   created() {
@@ -357,18 +332,22 @@ export default {
   methods: {
     init() {},
 
-    // getList() {
-    //   this.listLoading = true;
-    //   RecordAPI.searchByCombination(this.listQuery).then((response) => {
-    //     this.list = response.extra.records;
-    //     this.total = response.extra.total;
-    //   });
-    //   this.listLoading = false;
-    // },
+    //查询系统所有项目
+    listProjects() {
+      RecordAPI.listProjects().then((response) => {
+        this.projectList = response.extra.projects;
+      });
+    },
+
+    //组合查询
+    handleListByCombination() {
+      this.listQuery.page = 1;
+      this.presentedData = "combination";
+      this.listByCombination();
+    },
 
     //组合查询
     listByCombination() {
-      this.listQuery.page = 1;
       this.listLoading = true;
       RecordAPI.searchByCombination(this.listQuery).then((response) => {
         this.list = response.extra.records;
@@ -382,51 +361,44 @@ export default {
       });
       this.listLoading = false;
     },
-    //查询系统所有项目
-    listProjects() {
-      RecordAPI.listProjects().then((response) => {
-        this.projectList = response.extra.projects;
-      });
+
+    //根据教师名称模糊查询
+    handleListByTeacher() {
+      this.listQuery.page = 1;
+      this.presentedData = "teacher";
+      this.listByTeacher();
     },
+
     //根据教师名称模糊查询
     listByTeacher() {
       if (this.listQuery.teacherName !== "") {
-        this.listQuery.page = 1;
         this.listLoading = true;
         RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
           this.list = response.extra.records;
           this.total = response.extra.total;
-          if (this.list.length === 0) {
-            this.$message({
-              message: "未找到相应的记录",
-              type: "info",
-            });
-          }
+          // if (this.list.length === 0) {
+          //   this.$message({
+          //     message: "未找到相应的记录",
+          //     type: "info",
+          //   });
+          // }
         });
         this.listLoading = false;
       }
     },
 
-    // handleFilter() {
-    //   this.listQuery.page = 1;
-    //   this.getList();
-    // },
-
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作Success",
-        type: "success",
-      });
-      row.status = status;
-    },
-
-    sortChange(data) {
-      const { prop, order } = data;
-      if (prop === "id") {
-        this.sortByID(order);
+    //分页操作
+    handlePagination(val) {
+      console.log(val);
+      this.listQuery.page = val.page;
+      this.listQuery.limit = val.limit;
+      if (this.presentedData === "teacher") {
+        this.listByTeacher();
+      } else {
+        this.listByCombination();
       }
     },
-
+    //重置记录的中间结果
     resetTemp() {
       this.temp = {
         id: undefined,
@@ -439,6 +411,7 @@ export default {
       };
     },
 
+    //添加记录
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
@@ -448,6 +421,7 @@ export default {
       });
     },
 
+    //添加记录
     createData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
@@ -482,6 +456,7 @@ export default {
       });
     },
 
+    //更新记录
     handleUpdate(row, index) {
       this.ModifyIndex = index; //当前修改的row
       this.temp = Object.assign({}, row); // copy obj
@@ -491,6 +466,8 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
+
+    //更新记录
     updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
@@ -521,6 +498,7 @@ export default {
         }
       });
     },
+
     //删除某条记录
     handleDelete(row, index) {
       this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
@@ -554,16 +532,20 @@ export default {
         })
         .catch(() => {});
     },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
-    },
+
+    //导出excel
     handleDownload() {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["总序号", "学校名称", "学科专业名称", "学科专业代码", "教师姓名","课题名称","项目名称"];
+        const tHeader = [
+          "总序号",
+          "学校名称",
+          "学科专业名称",
+          "学科专业代码",
+          "教师姓名",
+          "课题名称",
+          "项目名称",
+        ];
         const filterVal = [
           "id",
           "schoolName",
@@ -571,7 +553,7 @@ export default {
           "subjectCode",
           "teacherName",
           "taskName",
-          "projectName"
+          "projectName",
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
@@ -582,6 +564,8 @@ export default {
         this.downloadLoading = false;
       });
     },
+
+    //json转化未object
     formatJson(filterVal) {
       return this.list.map((v) =>
         filterVal.map((j) => {
@@ -589,6 +573,7 @@ export default {
         })
       );
     },
+
     //组合搜索栏项目发送改变触发
     projectChanged(value) {
       this.listQuery.schoolName = "";
@@ -643,12 +628,12 @@ export default {
     },
 
     //重置组合搜索栏信息，任何更新可能导致其变化
-    resetCombinationSearch(){
+    resetCombinationSearch() {
       this.listProjects();
       this.listQuery.subjectName = "";
       this.listQuery.projectName = "";
       this.listQuery.schoolName = "";
-    }
+    },
   },
 };
 </script>
