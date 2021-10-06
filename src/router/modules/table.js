@@ -31,6 +31,12 @@ const tableRouter = {
     //   meta: { title: 'Inline Edit' }
     // },
     {
+      path: 'visitor-table',
+      component: () => import('@/views/table/visitor-table'),
+      name: 'VisitorTable',
+      meta: { title: '游客访问' }
+    },
+    {
       path: 'complex-table',
       component: () => import('@/views/table/complex-table'),
       name: 'ComplexTable',

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="filter-container" style="text-align:center">
       <!-- 模糊搜索栏 -->
       <el-input
         v-model="listQuery.teacherName"
@@ -131,8 +131,8 @@
       style="width: 100%"
     >
       <el-table-column label="序号" prop="id" align="center" min-width="5%">
-        <template slot-scope="{ row }">
-          <span>{{ row.id }}</span>
+        <template slot-scope="{ $index }">
+          <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
 
@@ -376,12 +376,12 @@ export default {
         RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
           this.list = response.extra.records;
           this.total = response.extra.total;
-          // if (this.list.length === 0) {
-          //   this.$message({
-          //     message: "未找到相应的记录",
-          //     type: "info",
-          //   });
-          // }
+          if (this.list.length === 0) {
+            this.$message({
+              message: "未找到相应的记录",
+              type: "info",
+            });
+          }
         });
         this.listLoading = false;
       }
