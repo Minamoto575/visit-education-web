@@ -74,6 +74,10 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    // meta: {
+    //   title: '首页',
+    //   icon: 'dashboard'
+    // },
     children: [
       {
         path: 'dashboard',
@@ -82,6 +86,12 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
+  },
+  {
+    path: '/visitor',
+    component: () => import('@/views/table/visitor-table'),
+    name: 'Visitor',
+    //meta: { title: '首页', icon: 'dashboard', affix: true }
   },
   // {
   //   path: '/documentation',
@@ -131,6 +141,20 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/complex-table',
+    name: 'Admin',
+    children: [
+      {
+        path: 'complex-table',
+        component: () => import('@/views/table/complex-table'),
+        name: 'ComplexTable',
+        meta: { title: '记录管理',icon:'user' }
+      }
+    ]
+  },
   // {
   //   path: '/permission',
   //   component: Layout,
@@ -190,7 +214,7 @@ export const asyncRoutes = [
   //componentsRouter,
   //chartsRouter,
   //nestedRouter,
-  tableRouter,
+  //tableRouter,
 
   // {
   //   path: '/example',

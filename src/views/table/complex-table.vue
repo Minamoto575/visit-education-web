@@ -128,7 +128,7 @@
       border
       fit
       highlight-current-row
-      style="width: 100%"
+      style="width: 98%;margin-left:1%"
     >
       <el-table-column label="序号" prop="id" align="center" min-width="5%">
         <template slot-scope="{ $index }">
@@ -206,6 +206,7 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
+      style="text-align:center"
       @pagination="handlePagination"
     />
 

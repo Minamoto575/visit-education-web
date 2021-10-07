@@ -60,12 +60,10 @@ const actions = {
   getInfo({ commit }) {
     return new Promise((resolve) => {
       commit('SET_ROLES', ['admin'])
-      //commit('SET_NAME', 'admin')
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       commit('SET_INTRODUCTION', 'ILOVEWHU')
       resolve({
         roles: ['admin'],
-        //name: 'admin',
         avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
         introduction: 'ILOVEWHU'
       })

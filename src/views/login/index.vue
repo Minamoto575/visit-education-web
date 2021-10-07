@@ -74,10 +74,7 @@
       </el-button> -->
 
       <div style="position: relative; margin-top: 20px">
-        <el-button
-          class="thirdparty-button"
-          type="text"
-          @click="showDialog = true"
+        <el-button class="thirdparty-button" type="text" @click="handleVisitor"
           >游客访问</el-button
         >
       </div>
@@ -180,8 +177,6 @@ export default {
                 path: this.redirect || "/",
                 query: this.otherQuery,
               });
-              console.log(this.otherQuery);
-              //this.$router.push('/')
               this.loading = false;
               this.$message({
                 message: "登录成功",
@@ -199,6 +194,14 @@ export default {
           console.log("error submit!!");
           return false;
         }
+      });
+    },
+    //游客访问
+    handleVisitor() {
+      this.$router.push({
+        //path: this.redirect || "/visitor",
+        path:"/visitor",
+        query: this.otherQuery,
       });
     },
     getOtherQuery(query) {

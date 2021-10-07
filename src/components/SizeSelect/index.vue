@@ -18,7 +18,7 @@ export default {
     return {
       sizeOptions: [
         //{ label: '大', value: 'big' },
-        { label: '大', value: '30' },
+        { label: '大', value: 'default' },
         { label: '中等', value: 'medium' },
         { label: '小', value: 'small' },
         //{ label: '迷你', value: 'mini' }
