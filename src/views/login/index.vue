@@ -83,24 +83,27 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
+//import { validUsername } from "@/utils/validate";
 import SocialSign from "./components/SocialSignin";
 import { SUCCESS } from "dropzone";
 
 export default {
   name: "Login",
   components: { SocialSign },
+  
   data() {
+    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}');
+    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}');
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error("请输入正确的用户名"));
+      if (!nameRegex.test(value)) {
+        callback(new Error("用户名:4-18位字母或数字"));
       } else {
         callback();
       }
     };
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("密码不得少于5位"));
+      if (!passwordRegex.test(value)) {
+        callback(new Error("密码:6-18位字母或数字"));
       } else {
         callback();
       }

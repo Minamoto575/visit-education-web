@@ -4,7 +4,7 @@
       <!-- 模糊搜索栏 -->
       <el-input
         v-model="listQuery.teacherName"
-        placeholder="导师名称"
+        placeholder="导师姓名"
         style="width: 200px; margin-right: 10px"
         class="filter-item"
         @keyup.enter.native="handleListByTeacher"
@@ -312,7 +312,7 @@ export default {
           { required: true, message: "专业代码不能为空", trigger: "blur" },
         ],
         teacherName: [
-          { required: true, message: "导师名称不能为空", trigger: "blur" },
+          { required: true, message: "导师姓名不能为空", trigger: "blur" },
         ],
         taskName: [
           { required: true, message: "课题名称不能为空", trigger: "blur" },

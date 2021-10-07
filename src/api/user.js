@@ -8,13 +8,13 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
+// export function getInfo(token) {
+//   return request({
+//     url: '/user/info',
+//     method: 'get',
+//     params: { token }
+//   })
+// }
 
 export function logout() {
   return request({
@@ -25,8 +25,50 @@ export function logout() {
 
 export function changePassword(data) {
   return request({
-      url:'/admin/changePassword',
-      method: 'post',
-      data
+    url: '/admin/changePassword',
+    method: 'post',
+    data
   })
+}
+
+export function deleteAdmin(deleteId) {
+  return request({
+    url: '/admin/delete',
+    method: 'delete',
+    deleteId
+  })
+}
+
+export function listall(){
+  return request({
+    url: '/admin/listall',
+    method: 'get'
+  })
+}
+
+export function register(data){
+  return request({
+    url: '/admin/register',
+    method: 'post',
+    data
+  })
+}
+
+
+export function testName(name){
+  return request({
+    url: '/admin/testName',
+    method: 'get',
+    params:{name}
+  })
+}
+
+export default {
+    login,
+    logout,
+    changePassword,
+    deleteAdmin,
+    listall,
+    register,
+    testName
 }

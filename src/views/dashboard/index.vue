@@ -4,7 +4,7 @@
       <!-- 模糊搜索栏 -->
       <el-input
         v-model="listQuery.teacherName"
-        placeholder="导师名称"
+        placeholder="导师姓名"
         style="width: 200px; margin-right: 10px"
         class="filter-item"
         @keyup.enter.native="handleListByTeacher"

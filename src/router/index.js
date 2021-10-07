@@ -73,26 +73,34 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    // meta: {
-    //   title: '首页',
-    //   icon: 'dashboard'
-    // },
+    redirect: '/recordManage',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
-      }
+        path: 'recordManage',
+        component: () => import('@/views/record-manage'),
+        name: 'RecordManage',
+        meta: { title: '记录管理',icon:'list' }
+      },
+    ]
+  },
+  {
+    path: '/admin',
+    component: Layout,
+    children: [
+      {
+        path: 'adminManage',
+        component: () => import('@/views/admin-manage'),
+        name: 'AdminManage',
+        meta: { title: '管理员管理',icon:'user' }
+      },
     ]
   },
   {
     path: '/visitor',
-    component: () => import('@/views/table/visitor-table'),
+    component: () => import('@/views/visitor'),
     name: 'Visitor',
-    //meta: { title: '首页', icon: 'dashboard', affix: true }
   },
+
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -141,20 +149,20 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  {
-    path: '/admin',
-    component: Layout,
-    redirect: '/admin/complex-table',
-    name: 'Admin',
-    children: [
-      {
-        path: 'complex-table',
-        component: () => import('@/views/table/complex-table'),
-        name: 'ComplexTable',
-        meta: { title: '记录管理',icon:'user' }
-      }
-    ]
-  },
+  // {
+  //   path: '/admin',
+  //   component: Layout,
+  //   redirect: '/admin/complex-table',
+  //   name: 'Admin',
+  //   children: [
+  //     {
+  //       path: 'complex-table',
+  //       component: () => import('@/views/table/complex-table'),
+  //       name: 'ComplexTable',
+  //       meta: { title: '记录管理',icon:'user' }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/permission',
   //   component: Layout,

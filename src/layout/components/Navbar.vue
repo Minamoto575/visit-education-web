@@ -38,7 +38,13 @@
           <el-dropdown-item divided @click.native="handleChangePassword">
             <span style="display: block">修改密码</span>
           </el-dropdown-item>
-
+          <el-dropdown-item
+            v-if="this.type === 'super'"
+            divided
+            @click.native="handleRegister"
+          >
+            <span style="display: block">注册管理员</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出</span>
           </el-dropdown-item>
@@ -46,34 +52,61 @@
       </el-dropdown>
 
       <!-- 修改密码 -->
-      <el-dialog title="修改密码" :visible.sync="dialogFormVisible">
+      <el-dialog title="修改密码" :visible.sync="changePasswordFormVisible">
         <el-form
-          ref="dataForm"
-          :rules="rules"
-          :model="admin"
+          ref="changePasswordForm"
+          :rules="changePasswordRules"
+          :model="changePasswordData"
           label-position="left"
           label-width="100px"
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">
-            <el-input v-model="admin.name" :disabled="true" />
+            <el-input v-model="changePasswordData.name" :disabled="true" />
           </el-form-item>
           <el-form-item label="原密码：" prop="oldPassword">
-            <el-input v-model="admin.oldPassword" />
+            <el-input v-model="changePasswordData.oldPassword" />
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword1">
-            <el-input v-model="admin.newPassword1" />
+            <el-input v-model="changePasswordData.newPassword1" />
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword2">
-            <el-input v-model="admin.newPassword2" />
+            <el-input v-model="changePasswordData.newPassword2" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false"> 取消 </el-button>
+          <el-button @click="changePasswordFormVisible = false">
+            取消
+          </el-button>
           <el-button type="primary" @click="changePassword()"> 确认 </el-button>
         </div>
       </el-dialog>
 
+      <!-- 注册管理员 -->
+      <el-dialog title="注册管理员" :visible.sync="registerFormVisible">
+        <el-form
+          ref="registerForm"
+          :rules="registerRules"
+          :model="registerData"
+          label-position="left"
+          label-width="100px"
+          style="width: 400px; margin-left: 50px"
+        >
+          <el-form-item label="用户名：" prop="name">
+            <el-input v-model="registerData.name" />
+          </el-form-item>
+          <el-form-item label="密码：" prop="password1">
+            <el-input v-model="registerData.password1" />
+          </el-form-item>
+          <el-form-item label="密码：" prop="password2">
+            <el-input v-model="registerData.password2" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="registerFormVisible = false"> 取消 </el-button>
+          <el-button type="primary" @click="register()"> 确认 </el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -87,37 +120,80 @@ import Screenfull from "@/components/Screenfull";
 import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import { SUCCESS } from "dropzone";
+import AdminAPI from "@/api/user";
+import { getType } from '@/utils/auth' // get type from cookie
 
 export default {
   data() {
+    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}');
+    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}');
+    //验证管理员名称是否被使用
+    var validateName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入管理员名称"));
+      } else if (!nameRegex.test(value)) {
+        callback(new Error("用户名:4-18位字母或数字"));
+      } else {
+        AdminAPI.testName(value).then(response=>{
+          if(response.msg=='used'){
+            callback(new Error("该用户名已被使用"));
+          }else{
+            callback();
+          }
+        })
+      }
+    };
+
+    //验证修改密码or注册  一次密码的合法性
     var validatePass1 = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入新密码"));
-      } else if (value.toString().length < 6 || value.toString().length > 18) {
-        callback(new Error("密码长度为6-18位"));
+        callback(new Error("请输入密码"));
+      } else if (!passwordRegex.test(value)) {
+        callback(new Error("密码:6-18位字母或数字"));
       } else {
         callback();
       }
     };
+
+    //验证修改密码 二次密码的一致性
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请再次输入新密码"));
-      } else if (value !== this.admin.newPassword1) {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.changePasswordData.newPassword1) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
       }
     };
+
+    //验证注册 二次密码的一致性
+    var validatePass3 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.registerData.password1) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+
     return {
-      dialogFormVisible: false,
-      admin: {
+      type: getType(),
+      changePasswordFormVisible: false,
+      registerFormVisible: false,
+      changePasswordData: {
         id: this.$store.getters.id,
         name: this.$store.getters.name,
         oldPassword: "",
         newPassword1: "",
         newPassword2: "",
       },
-      rules: {
+      registerData: {
+        name: "krl",
+        password1: "111111",
+        password2: "111111",
+      },
+      changePasswordRules: {
         //数据项的约束
         oldPassword: [
           { required: true, message: "请输入原密码", trigger: "blur" },
@@ -128,7 +204,19 @@ export default {
         newPassword2: [
           { required: true, validator: validatePass2, trigger: "blur" },
         ],
+        
       },
+      registerRules:{
+        name:[
+           { required: true, validator: validateName, trigger: "blur" },
+        ],
+        password1: [
+          { required: true, validator: validatePass1, trigger: "blur" },
+        ],
+        password2: [
+          { required: true, validator: validatePass3, trigger: "blur" },
+        ],
+      }
     };
   },
   components: {
@@ -143,6 +231,7 @@ export default {
     ...mapGetters(["sidebar", "avatar", "device"]),
   },
   methods: {
+
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
@@ -163,21 +252,28 @@ export default {
           });
         }
       });
-      
     },
 
+    //修改本账号的密码
+    handleChangePassword() {
+      this.resetAdmin();
+      this.changePasswordFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["changePasswordForm"].clearValidate();
+      });
+    },
     //修改密码
     async changePassword() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs["changePasswordForm"].validate((valid) => {
         if (valid) {
           var data = {
-            id: this.admin.id,
-            oldPassword: this.admin.oldPassword,
-            newPassword: this.admin.newPassword1,
+            id: this.changePasswordData.id,
+            oldPassword: this.changePasswordData.oldPassword,
+            newPassword: this.changePasswordData.newPassword1,
           };
           this.$store.dispatch("user/changePassword", data).then((response) => {
             if (response.code == 200) {
-              this.dialogFormVisible = false;
+              this.changePasswordFormVisible = false;
               this.$router.push(`/login?redirect=${this.$route.fullPath}`);
               this.$message({
                 message: "修改成功，请重新登录",
@@ -199,11 +295,43 @@ export default {
       });
     },
 
-    handleChangePassword() {
-      this.resetAdmin();
-      this.dialogFormVisible = true;
+    //注册管理员
+    handleRegister() {
+      this.resetRegister();
+      this.registerFormVisible = true;
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        this.$refs["registerForm"].clearValidate();
+      });
+    },
+    
+    register() {
+      this.$refs["registerForm"].validate((valid) => {
+        if (valid) {
+          var data = {
+            name: this.registerData.name,
+            password: this.registerData.password1,
+          };
+          console.log(data);
+          debugger
+          AdminAPI.register(data).then((response) => {
+            if (response.code === 200) {
+              this.$message({
+                message: data.name + " 注册成功",
+                type: "success",
+              });
+            } else if (response.code === 999) {
+              this.$message({
+                message: "没有该权限!",
+                type: "error",
+              });
+            } else {
+              this.$message({
+                message: "注册失败",
+                type: "error",
+              });
+            }
+          });
+        }
       });
     },
 
@@ -211,6 +339,12 @@ export default {
       this.oldPassword = "";
       this.newPassword1 = "";
       this.newPassword2 = "";
+    },
+
+    resetRegister() {
+      this.name = "";
+      this.password1 = "";
+      this.password2 = "";
     },
   },
 };

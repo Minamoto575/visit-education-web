@@ -1,5 +1,5 @@
 import { login, logout, getInfo, changePassword } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setType } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -8,6 +8,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
+  type: '', //管理员类型
   roles: []
 }
 
@@ -28,6 +29,9 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
+  SET_TYPE: (state, type) => {
+    state.type = type
+  },
   SET_ROLES: (state, roles) => {
     state.roles = roles
   }
@@ -44,10 +48,13 @@ const actions = {
         const token = response.extra.token
         const id = response.extra.id
         const name = response.extra.name
+        const type = response.extra.type
         commit('SET_TOKEN', token)
         commit('SET_ID',id)
         commit('SET_NAME',name)
+        commit('SET_TYPE',type)
         setToken(token)
+        setType(type)
         resolve(response)
       }).catch(error => {
         console.log(error);
