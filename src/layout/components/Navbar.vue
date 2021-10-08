@@ -121,12 +121,12 @@ import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import { SUCCESS } from "dropzone";
 import AdminAPI from "@/api/user";
-import { getType } from '@/utils/auth' // get type from cookie
+import { getType, getName, getId } from "@/utils/auth"; // get type from cookie
 
 export default {
   data() {
-    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}');
-    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}');
+    var nameRegex = new RegExp("[a-zA-Z0-9].{3,18}");
+    var passwordRegex = new RegExp("[a-zA-Z0-9].{5,18}");
     //验证管理员名称是否被使用
     var validateName = (rule, value, callback) => {
       if (!value) {
@@ -134,13 +134,13 @@ export default {
       } else if (!nameRegex.test(value)) {
         callback(new Error("用户名:4-18位字母或数字"));
       } else {
-        AdminAPI.testName(value).then(response=>{
-          if(response.msg=='used'){
+        AdminAPI.testName(value).then((response) => {
+          if (response.msg == "used") {
             callback(new Error("该用户名已被使用"));
-          }else{
+          } else {
             callback();
           }
-        })
+        });
       }
     };
 
@@ -182,16 +182,16 @@ export default {
       changePasswordFormVisible: false,
       registerFormVisible: false,
       changePasswordData: {
-        id: this.$store.getters.id,
-        name: this.$store.getters.name,
+        id: getId(),
+        name: getName(),
         oldPassword: "",
         newPassword1: "",
         newPassword2: "",
       },
       registerData: {
-        name: "krl",
-        password1: "111111",
-        password2: "111111",
+        name: "",
+        password1: "",
+        password2: "",
       },
       changePasswordRules: {
         //数据项的约束
@@ -204,19 +204,16 @@ export default {
         newPassword2: [
           { required: true, validator: validatePass2, trigger: "blur" },
         ],
-        
       },
-      registerRules:{
-        name:[
-           { required: true, validator: validateName, trigger: "blur" },
-        ],
+      registerRules: {
+        name: [{ required: true, validator: validateName, trigger: "blur" }],
         password1: [
           { required: true, validator: validatePass1, trigger: "blur" },
         ],
         password2: [
           { required: true, validator: validatePass3, trigger: "blur" },
         ],
-      }
+      },
     };
   },
   components: {
@@ -231,7 +228,6 @@ export default {
     ...mapGetters(["sidebar", "avatar", "device"]),
   },
   methods: {
-
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
@@ -303,7 +299,7 @@ export default {
         this.$refs["registerForm"].clearValidate();
       });
     },
-    
+
     register() {
       this.$refs["registerForm"].validate((valid) => {
         if (valid) {
@@ -311,8 +307,6 @@ export default {
             name: this.registerData.name,
             password: this.registerData.password1,
           };
-          console.log(data);
-          debugger
           AdminAPI.register(data).then((response) => {
             if (response.code === 200) {
               this.$message({
@@ -333,6 +327,7 @@ export default {
           });
         }
       });
+      this.registerFormVisible = false;
     },
 
     resetAdmin() {

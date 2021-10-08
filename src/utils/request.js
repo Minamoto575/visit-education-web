@@ -26,7 +26,6 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    debugger
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)

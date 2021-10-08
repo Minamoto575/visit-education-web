@@ -82,6 +82,15 @@ function uploadExcel(data){
     })
 }
 
+
+function listAll(data){
+    return request({
+        url: BaseUrl + '/search/all',
+        method: 'post',
+        data: data
+    })
+}
+
 export default {
     deleteRecord,
     postRecrod,
@@ -92,5 +101,6 @@ export default {
     listSchools,
     listSujects,
     updateRecord,
-    uploadExcel
+    uploadExcel,
+    listAll
 }

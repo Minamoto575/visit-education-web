@@ -35,11 +35,11 @@ export function deleteAdmin(deleteId) {
   return request({
     url: '/admin/delete',
     method: 'delete',
-    deleteId
+    params: {deleteId}
   })
 }
 
-export function listall(){
+export function listall(data){
   return request({
     url: '/admin/listall',
     method: 'get'
@@ -63,6 +63,14 @@ export function testName(name){
   })
 }
 
+export function listAll(data){
+  return request({
+    url: '/admin/search/all',
+    method: 'post',
+    data
+  })
+}
+
 export default {
     login,
     logout,
@@ -70,5 +78,6 @@ export default {
     deleteAdmin,
     listall,
     register,
-    testName
+    testName,
+    listAll
 }

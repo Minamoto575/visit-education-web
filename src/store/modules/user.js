@@ -1,10 +1,10 @@
 import { login, logout, getInfo, changePassword } from '@/api/user'
-import { getToken, setToken, removeToken, setType } from '@/utils/auth'
+import { getToken, setToken, removeToken, getType, setType, removeType, getId, removeId, setId, setName, removeName } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  id:undefined,
+  id: undefined,
   name: '',
   avatar: '',
   introduction: '',
@@ -50,11 +50,14 @@ const actions = {
         const name = response.extra.name
         const type = response.extra.type
         commit('SET_TOKEN', token)
-        commit('SET_ID',id)
-        commit('SET_NAME',name)
-        commit('SET_TYPE',type)
+        commit('SET_ID', id)
+        commit('SET_NAME', name)
+        commit('SET_TYPE', type)
+
         setToken(token)
         setType(type)
+        setId(id)
+        setName(name)
         resolve(response)
       }).catch(error => {
         console.log(error);
@@ -106,7 +109,11 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
+        removeId()
+        removeType()
+        removeName()
         resetRouter()
+
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
@@ -125,6 +132,8 @@ const actions = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          removeId()
+          removeType()
           resetRouter()
           // reset visited views and cached views
           // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
