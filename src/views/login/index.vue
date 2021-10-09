@@ -65,14 +65,6 @@
         >登录
       </el-button>
 
-      <!-- <el-button
-        :loading="loading"
-        type="primary"
-        style="width: 100%; margin-bottom: 30px;"
-        @click.native.prevent="handleLogin"
-        >游客
-      </el-button> -->
-
       <div style="position: relative; margin-top: 20px">
         <el-button class="thirdparty-button" type="text" @click="handleVisitor"
           >游客访问</el-button
@@ -110,8 +102,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "111111",
+        username: "",
+        password: "",
       },
       loginRules: {
         username: [

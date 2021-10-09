@@ -28,13 +28,12 @@
       >
         <div class="avatar-wrapper">
           <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" />
-          <!-- <img src="@/assets/user.gif" > -->
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
+          <!-- <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
-          </router-link>
+          </router-link> -->
           <el-dropdown-item divided @click.native="handleChangePassword">
             <span style="display: block">修改密码</span>
           </el-dropdown-item>
