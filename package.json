@@ -1,10 +1,11 @@
 {
-  "name": "vue-element-admin",
-  "version": "4.4.0",
-  "description": "A magical vue admin. An out-of-box UI solution for enterprise applications. Newest development stack of vue. Lots of awesome features",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "visit-education-web",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Kuang <kuang575@whu.edu.cn>",
   "scripts": {
     "dev": "vue-cli-service serve",
+    "dev:prod": "vue-cli-service serve --mode production",
     "lint": "eslint --ext .js,.vue src",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",

@@ -5,9 +5,9 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  //baseURL:"http://localhost:8080",
+  baseURL: 'http://localhost:8575',
+  //baseURL: 'http://47.106.170.165:8575',
+  //baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   //timeout: 5000, // request timeout
   withCredentials:true, //允许携带cookies
 })
@@ -79,7 +79,8 @@ service.interceptors.response.use(
     //debugger
     console.log('err' + error) // for debug
     Message({
-      message: error.message,
+      // message: error.message,
+      message:"网络错误",
       type: 'error',
       duration: 5 * 1000
     })

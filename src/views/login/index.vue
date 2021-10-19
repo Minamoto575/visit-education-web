@@ -23,10 +23,10 @@
           name="username"
           type="text"
           tabindex="1"
-          autocomplete="on"
+          
         />
       </el-form-item>
-
+      <!-- autocomplete="on" -->
       <el-tooltip
         v-model="capsTooltip"
         content="Caps lock is On"
@@ -45,7 +45,7 @@
             placeholder="密码"
             name="password"
             tabindex="2"
-            autocomplete="on"
+            autocomplete="off"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
@@ -82,10 +82,10 @@ import { SUCCESS } from "dropzone";
 export default {
   name: "Login",
   components: { SocialSign },
-  
+
   data() {
-    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}');
-    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}');
+    var nameRegex = new RegExp("[a-zA-Z0-9].{3,18}");
+    var passwordRegex = new RegExp("[a-zA-Z0-9].{5,18}");
     const validateUsername = (rule, value, callback) => {
       if (!nameRegex.test(value)) {
         callback(new Error("用户名:4-18位字母或数字"));
@@ -167,35 +167,37 @@ export default {
           this.loading = true;
           this.$store
             .dispatch("user/login", this.loginForm)
-            .then((response) => {
-              this.$router.push({
-                path: this.redirect || "/",
-                query: this.otherQuery,
-              });
-              this.loading = false;
-              this.$message({
-                message: "登录成功",
-                type: "success",
-              });
+            .then((res) => {
+              if (res.code === 200) {
+                this.$router.push({
+                  path: this.redirect || "/",
+                  query: this.otherQuery,
+                });
+                this.$message({
+                  message: "登录成功",
+                  type: "success",
+                });
+              }
+              if (res.code === 401) {
+                this.$message({
+                  message: "用户名或密码错误",
+                  type: "error",
+                });
+              }
             })
-            .catch(() => {
-              this.$message({
-                message: "用户名或密码错误",
-                type: "error",
-              });
-              this.loading = false;
-            });
+            .catch(() => {});
         } else {
           console.log("error submit!!");
           return false;
         }
+        this.loading = false;
       });
     },
     //游客访问
     handleVisitor() {
       this.$router.push({
         //path: this.redirect || "/visitor",
-        path:"/visitor",
+        path: "/visitor",
         query: this.otherQuery,
       });
     },

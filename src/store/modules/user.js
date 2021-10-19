@@ -45,19 +45,21 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ name: username.trim(), password: password }).then(response => {
-        const token = response.extra.token
-        const id = response.extra.id
-        const name = response.extra.name
-        const type = response.extra.type
-        commit('SET_TOKEN', token)
-        commit('SET_ID', id)
-        commit('SET_NAME', name)
-        commit('SET_TYPE', type)
-
-        setToken(token)
-        setType(type)
-        setId(id)
-        setName(name)
+        // console.log(response);
+        if (response.code == 200) {
+          const token = response.extra.token
+          const id = response.extra.id
+          const name = response.extra.name
+          const type = response.extra.type
+          commit('SET_TOKEN', token)
+          commit('SET_ID', id)
+          commit('SET_NAME', name)
+          commit('SET_TYPE', type)
+          setToken(token)
+          setType(type)
+          setId(id)
+          setName(name)
+        }
         resolve(response)
       }).catch(error => {
         console.log(error);

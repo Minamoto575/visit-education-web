@@ -51,7 +51,7 @@
       </el-dropdown>
 
       <!-- 修改密码 -->
-      <el-dialog title="修改密码" :visible.sync="changePasswordFormVisible">
+      <el-dialog title="修改密码" :visible.sync="changePasswordFormVisible" append-to-body>
         <el-form
           ref="changePasswordForm"
           :rules="changePasswordRules"
@@ -82,7 +82,7 @@
       </el-dialog>
 
       <!-- 注册管理员 -->
-      <el-dialog title="注册管理员" :visible.sync="registerFormVisible">
+      <el-dialog title="注册管理员" :visible.sync="registerFormVisible" append-to-body>
         <el-form
           ref="registerForm"
           :rules="registerRules"
@@ -121,6 +121,7 @@ import Search from "@/components/HeaderSearch";
 import { SUCCESS } from "dropzone";
 import AdminAPI from "@/api/user";
 import { getType, getName, getId } from "@/utils/auth"; // get type from cookie
+import MiddleUtil from "@/utils/MiddleUtil";
 
 export default {
   data() {
@@ -292,6 +293,7 @@ export default {
 
     //注册管理员
     handleRegister() {
+
       this.resetRegister();
       this.registerFormVisible = true;
       this.$nextTick(() => {
@@ -312,6 +314,8 @@ export default {
                 message: data.name + " 注册成功",
                 type: "success",
               });
+              MiddleUtil.$emit("register","调用admin-mannger中的刷新列表方法");
+
             } else if (response.code === 999) {
               this.$message({
                 message: "没有该权限!",
@@ -336,9 +340,9 @@ export default {
     },
 
     resetRegister() {
-      this.name = "";
-      this.password1 = "";
-      this.password2 = "";
+      this.registerData.name = "";
+      this.registerData.password1 = "";
+      this.registerData.password2 = "";
     },
   },
 };
