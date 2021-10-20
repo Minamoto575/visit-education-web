@@ -113,11 +113,13 @@ export default {
             this.$message({
               message: "上传成功！",
               type: "success",
+              duration:3000
             });
           } else {
             this.$message({
               message: "上传失败！",
               type: "warning",
+              duration:3000
             });
             this.loading = false;
           }

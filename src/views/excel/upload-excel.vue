@@ -33,11 +33,13 @@ export default {
             this.$message({
               message: "上传成功！",
               type: "success",
+              duration:3000
             });
           } else {
             this.$message({
               message: "上传失败！",
               type: "warning",
+              duration:3000
             });
           }
         });
@@ -47,6 +49,7 @@ export default {
       this.$message({
         message: "文件大小不能超过2M！",
         type: "warning",
+        duration:3000
       });
       return false;
     },

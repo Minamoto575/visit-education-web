@@ -242,6 +242,7 @@ export default {
             this.$message({
               message: "未找到相应的记录",
               type: "warning",
+              duration: 3000,
             });
           }
         });
@@ -273,6 +274,7 @@ export default {
             this.$message({
               message: "未找到相应的记录",
               type: "warning",
+              duration: 3000,
             });
           }
         });
@@ -282,27 +284,13 @@ export default {
 
     //分页操作
     handlePagination(val) {
-      const query = this.listQuery;
-      if (
-        query.teacherName === "" &&
-        (query.projectName === "" ||
-          query.schoolName === "" ||
-          query.subjectName === "")
-      ) {
-        this.$message({
-          message: "查询条件不能为空!",
-          type: "warning",
-          duration: 3000,
-        });
+      console.log(val);
+      this.listQuery.page = val.page;
+      this.listQuery.limit = val.limit;
+      if (this.presentedData === "teacher") {
+        this.listByTeacher();
       } else {
-        console.log(val);
-        this.listQuery.page = val.page;
-        this.listQuery.limit = val.limit;
-        if (this.presentedData === "teacher") {
-          this.listByTeacher();
-        } else {
-          this.listByCombination();
-        }
+        this.listByCombination();
       }
     },
 

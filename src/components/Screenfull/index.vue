@@ -25,7 +25,8 @@ export default {
       if (!screenfull.enabled) {
         this.$message({
           message: 'you browser can not work',
-          type: 'warning'
+          type: 'warning',
+          duration:3000
         })
         return false
       }

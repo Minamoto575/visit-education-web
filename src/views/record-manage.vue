@@ -342,11 +342,11 @@ export default {
         if (response.code === 200) {
           this.list = response.extra.records;
           this.total = response.extra.total;
-          //this.tableKey = Math.random();
         } else {
           this.$message({
             message: "服务器出错!",
             type: "error",
+            duration: 3000,
           });
         }
       });
@@ -388,6 +388,7 @@ export default {
             this.$message({
               message: "未找到相应的记录",
               type: "warning",
+              duration: 3000,
             });
           }
         });
@@ -419,6 +420,7 @@ export default {
             this.$message({
               message: "未找到相应的记录",
               type: "warning",
+              duration: 3000,
             });
           }
         });
@@ -428,33 +430,18 @@ export default {
 
     //分页操作
     handlePagination(val) {
-      const query = this.listQuery;
-      if (
-        query.teacherName === "" &&
-        (query.projectName === "" ||
-          query.schoolName === "" ||
-          query.subjectName === "")
-      ) {
-        this.$message({
-          message: "查询条件不能为空!",
-          type: "warning",
-          duration: 3000,
-        });
+      console.log(val);
+      this.listQuery.page = val.page;
+      this.listQuery.limit = val.limit;
+      if (this.presentedData === "teacher") {
+        this.listByTeacher();
+      } else if (this.presentedData === "combination") {
+        this.listByCombination();
       } else {
-        console.log(val);
-        this.listQuery.page = val.page;
-        this.listQuery.limit = val.limit;
-        if (this.presentedData === "teacher") {
-          this.listByTeacher();
-        } else if (this.presentedData === "combination") {
-          this.listByCombination();
-        } else {
-          //初始化展示所有数据的分页操作
-          this.listAllRecords();
-        }
+        //初始化展示所有数据的分页操作
+        this.listAllRecords();
       }
     },
-
     //重置记录的中间结果
     resetTemp() {
       this.temp = {
@@ -492,20 +479,20 @@ export default {
                 title: "Success",
                 message: "添加成功",
                 type: "success",
-                duration: 1500,
+                duration: 3000,
               });
             } else if (response.code === 202) {
               this.$message({
                 type: "warning",
                 message: "已存在该记录",
-                duration: 2000,
+                duration: 3000,
               });
             } else {
               this.$notify({
                 title: "Fail",
                 message: "添加失败",
                 type: "error",
-                duration: 2000,
+                duration: 3000,
               });
             }
           });
@@ -541,14 +528,14 @@ export default {
                 title: "Success",
                 message: "修改成功",
                 type: "success",
-                duration: 2000,
+                duration: 3000,
               });
             } else {
               this.$notify({
                 title: "Fail",
                 message: "修改失败",
                 type: "error",
-                duration: 2000,
+                duration: 3000,
               });
             }
           });
@@ -570,7 +557,7 @@ export default {
                 title: "Success",
                 message: "删除成功",
                 type: "success",
-                duration: 2000,
+                duration: 3000,
               });
               this.list.splice(index, 1);
               //列表所有均被删除
@@ -589,13 +576,12 @@ export default {
                   this.listByCombination();
                 }
               }
-              
             } else {
               this.$notify({
                 title: "Fail",
                 message: "删除失败",
                 type: "error",
-                duration: 2000,
+                duration: 3000,
               });
             }
           });
@@ -688,6 +674,7 @@ export default {
       this.$message({
         message: "文件大小不能超过2M！",
         type: "warning",
+        duration: 3000,
       });
       return false;
     },

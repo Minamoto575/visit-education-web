@@ -37,7 +37,8 @@ export default {
       this.refreshView()
       this.$message({
         message: '切换成功',
-        type: 'success'
+        type: 'success',
+        duration:3000
       })
     },
     refreshView() {

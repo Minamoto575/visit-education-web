@@ -207,6 +207,7 @@ export default {
           this.$message({
             message: "网络错误",
             type: "error",
+            duration:3000
           });
         }
       });
@@ -256,12 +257,14 @@ export default {
                 title: "Success",
                 message: "密码修改成功",
                 type: "success",
+                duration:3000
               });
             } else {
               this.$notify({
                 title: "Fail",
                 message: "密码修改失败",
                 type: "error",
+                duration:3000
               });
             }
           });
@@ -283,7 +286,7 @@ export default {
                 title: "Success",
                 message: "删除成功",
                 type: "success",
-                duration: 2000,
+                duration: 3000,
               });
               this.list.splice(index, 1);
               //当前列表记录都被删除 当前页码减一
@@ -296,7 +299,7 @@ export default {
                 title: "Fail",
                 message: "删除失败",
                 type: "error",
-                duration: 2000,
+                duration: 3000,
               });
             }
           });

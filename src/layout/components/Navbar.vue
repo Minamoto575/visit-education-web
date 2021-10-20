@@ -51,7 +51,11 @@
       </el-dropdown>
 
       <!-- 修改密码 -->
-      <el-dialog title="修改密码" :visible.sync="changePasswordFormVisible" append-to-body>
+      <el-dialog
+        title="修改密码"
+        :visible.sync="changePasswordFormVisible"
+        append-to-body
+      >
         <el-form
           ref="changePasswordForm"
           :rules="changePasswordRules"
@@ -82,7 +86,11 @@
       </el-dialog>
 
       <!-- 注册管理员 -->
-      <el-dialog title="注册管理员" :visible.sync="registerFormVisible" append-to-body>
+      <el-dialog
+        title="注册管理员"
+        :visible.sync="registerFormVisible"
+        append-to-body
+      >
         <el-form
           ref="registerForm"
           :rules="registerRules"
@@ -240,11 +248,13 @@ export default {
           this.$message({
             message: "退出成功",
             type: "success",
+            duration:3000
           });
         } else {
           this.$message({
             message: "退出失败",
             type: "error",
+            duration:3000
           });
         }
       });
@@ -274,16 +284,19 @@ export default {
               this.$message({
                 message: "修改成功，请重新登录",
                 type: "success",
+                duration:3000
               });
             } else if (response.code == 408) {
               this.$message({
                 message: "原密码错误",
                 type: "error",
+                duration:3000
               });
             } else {
               this.$message({
                 message: "修改失败",
                 type: "error",
+                duration:3000
               });
             }
           });
@@ -293,7 +306,6 @@ export default {
 
     //注册管理员
     handleRegister() {
-
       this.resetRegister();
       this.registerFormVisible = true;
       this.$nextTick(() => {
@@ -310,21 +322,24 @@ export default {
           };
           AdminAPI.register(data).then((response) => {
             if (response.code === 200) {
-              this.$message({
-                message: data.name + " 注册成功",
+              this.$notify({
+                title: "Success",
+                message: data.name + "注册成功",
                 type: "success",
+                duration: 3000,
               });
-              MiddleUtil.$emit("register","调用admin-mannger中的刷新列表方法");
-
+              MiddleUtil.$emit("register", "调用admin-mannger中的刷新列表方法");
             } else if (response.code === 999) {
               this.$message({
                 message: "没有该权限!",
                 type: "error",
+                duration:3000
               });
             } else {
               this.$message({
                 message: "注册失败",
                 type: "error",
+                duration:3000
               });
             }
           });

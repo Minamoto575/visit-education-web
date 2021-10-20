@@ -41,7 +41,7 @@ export default {
         message: '  Compiling the theme',
         customClass: 'theme-message',
         type: 'success',
-        duration: 0,
+        duration: 3000,
         iconClass: 'el-icon-loading'
       })
 
