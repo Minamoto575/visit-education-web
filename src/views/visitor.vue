@@ -101,7 +101,7 @@
         再选择学校、专业、导师。一般国内访问学者项目的申请人，在数据库中可以选择骨干项目的导师和一般项目的导师。
       </p>
     </div>
-    
+
     <!-- 数据展示 -->
     <el-table
       :key="tableKey"
@@ -222,18 +222,31 @@ export default {
 
     //组合查询
     listByCombination() {
-      this.listLoading = true;
-      RecordAPI.searchByCombination(this.listQuery).then((response) => {
-        this.list = response.extra.records;
-        this.total = response.extra.total;
-        if (this.list.length === 0) {
-          this.$message({
-            message: "未找到相应的记录",
-            type: "info",
-          });
-        }
-      });
-      this.listLoading = false;
+      const query = this.listQuery;
+      if (
+        query.projectName === "" ||
+        query.schoolName === "" ||
+        query.subjectName === ""
+      ) {
+        this.$message({
+          message: "组合搜索栏存在空项!",
+          type: "warning",
+          duration: 3000,
+        });
+      } else {
+        this.listLoading = true;
+        RecordAPI.searchByCombination(this.listQuery).then((response) => {
+          this.list = response.extra.records;
+          this.total = response.extra.total;
+          if (this.list.length === 0) {
+            this.$message({
+              message: "未找到相应的记录",
+              type: "warning",
+            });
+          }
+        });
+        this.listLoading = false;
+      }
     },
 
     //根据教师名称模糊查询
@@ -245,7 +258,13 @@ export default {
 
     //根据教师名称模糊查询
     listByTeacher() {
-      if (this.listQuery.teacherName !== "") {
+      if (this.listQuery.teacherName === "") {
+        this.$message({
+          message: "导师姓名不能为空!",
+          type: "warning",
+          duration: 3000,
+        });
+      } else {
         this.listLoading = true;
         RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
           this.list = response.extra.records;
@@ -253,7 +272,7 @@ export default {
           if (this.list.length === 0) {
             this.$message({
               message: "未找到相应的记录",
-              type: "info",
+              type: "warning",
             });
           }
         });
@@ -263,13 +282,27 @@ export default {
 
     //分页操作
     handlePagination(val) {
-      console.log(val);
-      this.listQuery.page = val.page;
-      this.listQuery.limit = val.limit;
-      if (this.presentedData === "teacher") {
-        this.listByTeacher();
+      const query = this.listQuery;
+      if (
+        query.teacherName === "" &&
+        (query.projectName === "" ||
+          query.schoolName === "" ||
+          query.subjectName === "")
+      ) {
+        this.$message({
+          message: "查询条件不能为空!",
+          type: "warning",
+          duration: 3000,
+        });
       } else {
-        this.listByCombination();
+        console.log(val);
+        this.listQuery.page = val.page;
+        this.listQuery.limit = val.limit;
+        if (this.presentedData === "teacher") {
+          this.listByTeacher();
+        } else {
+          this.listByCombination();
+        }
       }
     },
 

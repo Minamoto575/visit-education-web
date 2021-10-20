@@ -30,18 +30,6 @@ const tableRouter = {
     //   name: 'InlineEditTable',
     //   meta: { title: 'Inline Edit' }
     // },
-    {
-      path: 'visitor-table',
-      component: () => import('@/views/table/visitor-table'),
-      name: 'VisitorTable',
-      meta: { title: '游客访问' }
-    },
-    {
-      path: 'complex-table',
-      component: () => import('@/views/table/complex-table'),
-      name: 'ComplexTable',
-      meta: { title: '记录管理' }
-    }
   ]
 }
 export default tableRouter

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="text-align:center">
+    <div class="filter-container" style="text-align: center">
       <!-- 模糊搜索栏 -->
       <el-input
         v-model="listQuery.teacherName"
@@ -128,7 +128,7 @@
       border
       fit
       highlight-current-row
-      style="width: 98%;margin-left:1%"
+      style="width: 98%; margin-left: 1%"
     >
       <el-table-column label="序号" prop="id" align="center" min-width="5%">
         <template slot-scope="{ $index }">
@@ -206,7 +206,7 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      style="text-align:center"
+      style="text-align: center"
       @pagination="handlePagination"
     />
 
@@ -368,18 +368,31 @@ export default {
 
     //组合查询
     listByCombination() {
-      this.listLoading = true;
-      RecordAPI.searchByCombination(this.listQuery).then((response) => {
-        this.list = response.extra.records;
-        this.total = response.extra.total;
-        if (this.list.length === 0) {
-          this.$message({
-            message: "未找到相应的记录",
-            type: "info",
-          });
-        }
-      });
-      this.listLoading = false;
+      const query = this.listQuery;
+      if (
+        query.projectName === "" ||
+        query.schoolName === "" ||
+        query.subjectName === ""
+      ) {
+        this.$message({
+          message: "组合搜索栏存在空项!",
+          type: "warning",
+          duration: 3000,
+        });
+      } else {
+        this.listLoading = true;
+        RecordAPI.searchByCombination(this.listQuery).then((response) => {
+          this.list = response.extra.records;
+          this.total = response.extra.total;
+          if (this.list.length === 0) {
+            this.$message({
+              message: "未找到相应的记录",
+              type: "warning",
+            });
+          }
+        });
+        this.listLoading = false;
+      }
     },
 
     //根据教师名称模糊查询
@@ -391,7 +404,13 @@ export default {
 
     //根据教师名称模糊查询
     listByTeacher() {
-      if (this.listQuery.teacherName !== "") {
+      if (this.listQuery.teacherName === "") {
+        this.$message({
+          message: "导师姓名不能为空!",
+          type: "warning",
+          duration: 3000,
+        });
+      } else {
         this.listLoading = true;
         RecordAPI.searchByTeacherName(this.listQuery).then((response) => {
           this.list = response.extra.records;
@@ -399,7 +418,7 @@ export default {
           if (this.list.length === 0) {
             this.$message({
               message: "未找到相应的记录",
-              type: "info",
+              type: "warning",
             });
           }
         });
@@ -409,18 +428,33 @@ export default {
 
     //分页操作
     handlePagination(val) {
-      console.log(val);
-      this.listQuery.page = val.page;
-      this.listQuery.limit = val.limit;
-      if (this.presentedData === "teacher") {
-        this.listByTeacher();
-      } else if(this.presentedData === "combination"){
-        this.listByCombination();
-      }else{
-        //初始化展示所有数据的分页操作
-        this.listAllRecords();
+      const query = this.listQuery;
+      if (
+        query.teacherName === "" &&
+        (query.projectName === "" ||
+          query.schoolName === "" ||
+          query.subjectName === "")
+      ) {
+        this.$message({
+          message: "查询条件不能为空!",
+          type: "warning",
+          duration: 3000,
+        });
+      } else {
+        console.log(val);
+        this.listQuery.page = val.page;
+        this.listQuery.limit = val.limit;
+        if (this.presentedData === "teacher") {
+          this.listByTeacher();
+        } else if (this.presentedData === "combination") {
+          this.listByCombination();
+        } else {
+          //初始化展示所有数据的分页操作
+          this.listAllRecords();
+        }
       }
     },
+
     //重置记录的中间结果
     resetTemp() {
       this.temp = {
