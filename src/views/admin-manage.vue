@@ -12,7 +12,7 @@
     >
       <el-table-column label="序号" prop="num" align="center" min-width="5%">
         <template slot-scope="{ $index }">
-          <span>{{  (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
+          <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column label="管理员id" prop="id" align="center" min-width="5%">
@@ -286,6 +286,10 @@ export default {
                 duration: 2000,
               });
               this.list.splice(index, 1);
+              //当前列表记录都被删除 当前页码减一
+              if (this.list.length === 0) {
+                this.listQuery.page = Math.max(this.listQuery.page - 1, 1);
+              }
               this.listAll();
             } else {
               this.$notify({

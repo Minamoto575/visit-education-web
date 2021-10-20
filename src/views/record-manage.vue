@@ -575,8 +575,21 @@ export default {
               this.list.splice(index, 1);
               //列表所有均被删除
               if (this.list.length === 0) {
-                this.resetCombinationSearch();
+                if (this.listQuery.page === 1) {
+                  //全部删除则重置组合搜索栏
+                  this.resetCombinationSearch();
+                }
+                this.listQuery.page = this.listQuery.page - 1;
               }
+              //刷新列表
+              if (this.listQuery.page > 0) {
+                if (this.presentedData === "teacher") {
+                  this.listByTeacher();
+                } else if (this.presentedData === "combination") {
+                  this.listByCombination();
+                }
+              }
+              
             } else {
               this.$notify({
                 title: "Fail",
