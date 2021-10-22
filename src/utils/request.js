@@ -79,8 +79,8 @@ service.interceptors.response.use(
     //debugger
     console.log('err' + error) // for debug
     Message({
-      // message: error.message,
-      message:"网络错误",
+      message: error.message,
+      //message:"网络错误",
       type: 'error',
       duration: 5 * 1000
     })

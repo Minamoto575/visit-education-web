@@ -96,7 +96,7 @@ export default {
         var data = new FormData();
         data.append("file", rawFile);
         RecordAPI.uploadExcel(data).then((response) => {
-          if (response.code == 200) {
+          if (response.code === 200) {
             //前端展示处理
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -110,17 +110,24 @@ export default {
             };
             reader.readAsArrayBuffer(rawFile);
             this.loading = false;
-            this.$message({
-              message: "上传成功！",
-              type: "success",
-              duration:3000
-            });
+            this.$alert(response.msg,"上传成功",{
+              type:'success'
+            })
           } else {
-            this.$message({
-              message: "上传失败！",
-              type: "warning",
-              duration:3000
-            });
+            this.$alert(response.msg,"上传失败",{
+              type:'error'
+            })
+          
+            // this.$confirm(response.msg, "上传失败", {
+            //   //confirmButtonText: "确定",
+            //   type: "error",
+            // });
+
+            // this.$message({
+            //   message: "上传失败！",
+            //   type: "warning",
+            //   duration:3000
+            // });
             this.loading = false;
           }
           resolve();
