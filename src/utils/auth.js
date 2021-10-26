@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'Admin-Token'
-const Type = 'type' //用户类型
+const Type = 'type' // 用户类型
 const Id = 'id'
 const Name = 'name'
 
