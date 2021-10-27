@@ -7,9 +7,9 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: 'http://localhost:8575',
   // baseURL: 'http://47.106.170.165:8575',
-  //baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  //timeout: 5000, // request timeout
-  withCredentials:true, //允许携带cookies
+  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  // timeout: 5000, // request timeout
+  withCredentials: true // 允许携带cookies
 })
 
 // request interceptor
@@ -22,7 +22,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['token'] = getToken()
     }
-    console.log(config);
+    console.log(config)
     return config
   },
   error => {
@@ -46,8 +46,8 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    console.log(res);
-    return res;
+    console.log(res)
+    return res
     // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 200) {
     //   Message({
@@ -76,11 +76,11 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    //debugger
+    // debugger
     console.log('err' + error) // for debug
     Message({
       message: error.message,
-      //message:"网络错误",
+      // message:"网络错误",
       type: 'error',
       duration: 5 * 1000
     })

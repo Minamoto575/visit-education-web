@@ -1,5 +1,5 @@
-import { login, logout, getInfo, changePassword } from '@/api/user'
-import { getToken, setToken, removeToken, getType, setType, removeType, getId, removeId, setId, setName, removeName } from '@/utils/auth'
+import { changePassword, login, logout } from '@/api/user'
+import { getToken, removeId, removeName, removeToken, removeType, setId, setName, setToken, setType } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -8,11 +8,11 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  type: '', //管理员类型
+  type: '', // 管理员类型
   roles: []
 }
 
-//事件
+// 事件
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
@@ -37,7 +37,7 @@ const mutations = {
   }
 }
 
-//类似mutations 通过dispatch提交 支持异步
+// 类似mutations 通过dispatch提交 支持异步
 
 const actions = {
   // user login
@@ -62,7 +62,7 @@ const actions = {
         }
         resolve(response)
       }).catch(error => {
-        console.log(error);
+        console.log(error)
         reject(error)
       })
     })
@@ -126,7 +126,7 @@ const actions = {
     })
   },
 
-  //修改密码
+  // 修改密码
   changePassword({ commit, state, dispatch }, data) {
     return new Promise((resolve, reject) => {
       changePassword(data).then((response) => {

@@ -4,8 +4,8 @@
       ref="loginForm"
       :model="loginForm"
       :rules="loginRules"
-      class="login-form"
       autocomplete="on"
+      class="login-form"
       label-position="left"
     >
       <div class="title-container">
@@ -19,19 +19,18 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="用户名"
           name="username"
-          type="text"
+          placeholder="用户名"
           tabindex="1"
-          
+          type="text"
         />
       </el-form-item>
       <!-- autocomplete="on" -->
       <el-tooltip
         v-model="capsTooltip"
         content="Caps lock is On"
-        placement="right"
         manual
+        placement="right"
       >
         <el-form-item prop="password">
           <span class="svg-container">
@@ -42,12 +41,12 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="密码"
-            name="password"
-            tabindex="2"
             autocomplete="off"
-            @keyup.native="checkCapslock"
+            name="password"
+            placeholder="密码"
+            tabindex="2"
             @blur="capsTooltip = false"
+            @keyup.native="checkCapslock"
             @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
@@ -59,88 +58,90 @@
       </el-tooltip>
       <el-button
         :loading="loading"
-        type="primary"
         style="width: 100%; margin-bottom: 30px"
+        type="primary"
         @click.native.prevent="handleLogin"
-        >登录
+      >登录
       </el-button>
 
       <div style="position: relative; margin-top: 20px">
-        <el-button class="thirdparty-button" type="text" @click="handleVisitor"
-          >游客访问</el-button
-        >
+        <el-button
+          class="thirdparty-button"
+          type="text"
+          @click="handleVisitor"
+        >游客访问
+        </el-button>
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-//import { validUsername } from "@/utils/validate";
-import SocialSign from "./components/SocialSignin";
-import { SUCCESS } from "dropzone";
+// import { validUsername } from "@/utils/validate";
+import SocialSign from './components/SocialSignin'
 
 export default {
-  name: "Login",
+  name: 'Login',
   components: { SocialSign },
 
   data() {
-    var nameRegex = new RegExp("[a-zA-Z0-9].{3,18}");
-    var passwordRegex = new RegExp("[a-zA-Z0-9].{5,18}");
+    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}')
+    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}')
     const validateUsername = (rule, value, callback) => {
       if (!nameRegex.test(value)) {
-        callback(new Error("用户名:4-18位字母或数字"));
+        callback(new Error('用户名:4-18位字母或数字'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (!passwordRegex.test(value)) {
-        callback(new Error("密码:6-18位字母或数字"));
+        callback(new Error('密码:6-18位字母或数字'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: "admin",
-        password: "111111",
+        username: 'admin',
+        password: '111111'
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername },
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword },
-        ],
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
-      passwordType: "password",
+      passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {},
-    };
+      otherQuery: {}
+    }
   },
   watch: {
     $route: {
-      handler: function (route) {
-        const query = route.query;
+      handler: function(route) {
+        const query = route.query
         if (query) {
-          this.redirect = query.redirect;
-          this.otherQuery = this.getOtherQuery(query);
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    if (this.loginForm.username === "") {
-      this.$refs.username.focus();
-    } else if (this.loginForm.password === "") {
-      this.$refs.password.focus();
+    if (this.loginForm.username === '') {
+      this.$refs.username.focus()
+    } else if (this.loginForm.password === '') {
+      this.$refs.password.focus()
     }
   },
   destroyed() {
@@ -148,71 +149,72 @@ export default {
   },
   methods: {
     checkCapslock(e) {
-      const { key } = e;
-      this.capsTooltip = key && key.length === 1 && key >= "A" && key <= "Z";
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
     },
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch('user/login', this.loginForm)
             .then((res) => {
               if (res.code === 200) {
                 this.$router.push({
-                  path: this.redirect || "/",
-                  query: this.otherQuery,
-                });
+                  path: this.redirect || '/',
+                  query: this.otherQuery
+                })
                 this.$message({
-                  message: "登录成功",
-                  type: "success",
-                  duration:3000
-                });
+                  message: '登录成功',
+                  type: 'success',
+                  duration: 3000
+                })
               }
               if (res.code === 401) {
                 this.$message({
-                  message: "用户名或密码错误",
-                  type: "error",
-                  duration:3000
-                });
+                  message: '用户名或密码错误',
+                  type: 'error',
+                  duration: 3000
+                })
               }
             })
-            .catch(() => {});
+            .catch(() => {
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-        this.loading = false;
-      });
+        this.loading = false
+      })
     },
-    //游客访问
+    // 游客访问
     handleVisitor() {
       this.$router.push({
-        //path: this.redirect || "/visitor",
-        path: "/visitor",
-        query: this.otherQuery,
-      });
+        // path: this.redirect || "/visitor",
+        path: '/visitor',
+        query: this.otherQuery
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
-          acc[cur] = query[cur];
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
         }
-        return acc;
-      }, {});
-    },
-  },
-};
+        return acc
+      }, {})
+    }
+  }
+}
 </script>
 
 <style lang="scss">

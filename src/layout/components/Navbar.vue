@@ -7,18 +7,18 @@
       @toggleClick="toggleSideBar"
     />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <error-log class="errLog-container right-menu-item hover-effect" />
+        <error-log class="errLog-container right-menu-item hover-effect"/>
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
 
         <el-tooltip content="字体大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
+          <size-select id="size-select" class="right-menu-item hover-effect"/>
         </el-tooltip>
       </template>
 
@@ -27,8 +27,8 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
+          <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar">
+          <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/">
@@ -52,66 +52,66 @@
 
       <!-- 修改密码 -->
       <el-dialog
-        title="修改密码"
         :visible.sync="changePasswordFormVisible"
         append-to-body
+        title="修改密码"
       >
         <el-form
           ref="changePasswordForm"
-          :rules="changePasswordRules"
           :model="changePasswordData"
+          :rules="changePasswordRules"
           label-position="left"
           label-width="100px"
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">
-            <el-input v-model="changePasswordData.name" :disabled="true" />
+            <el-input v-model="changePasswordData.name" :disabled="true"/>
           </el-form-item>
           <el-form-item label="原密码：" prop="oldPassword">
-            <el-input v-model="changePasswordData.oldPassword" />
+            <el-input v-model="changePasswordData.oldPassword"/>
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword1">
-            <el-input v-model="changePasswordData.newPassword1" />
+            <el-input v-model="changePasswordData.newPassword1"/>
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword2">
-            <el-input v-model="changePasswordData.newPassword2" />
+            <el-input v-model="changePasswordData.newPassword2"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="changePasswordFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="changePassword()"> 确认 </el-button>
+          <el-button type="primary" @click="changePassword()"> 确认</el-button>
         </div>
       </el-dialog>
 
       <!-- 注册管理员 -->
       <el-dialog
-        title="注册管理员"
         :visible.sync="registerFormVisible"
         append-to-body
+        title="注册管理员"
       >
         <el-form
           ref="registerForm"
-          :rules="registerRules"
           :model="registerData"
+          :rules="registerRules"
           label-position="left"
           label-width="100px"
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">
-            <el-input v-model="registerData.name" />
+            <el-input v-model="registerData.name"/>
           </el-form-item>
           <el-form-item label="密码：" prop="password1">
-            <el-input v-model="registerData.password1" />
+            <el-input v-model="registerData.password1"/>
           </el-form-item>
           <el-form-item label="密码：" prop="password2">
-            <el-input v-model="registerData.password2" />
+            <el-input v-model="registerData.password2"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="registerFormVisible = false"> 取消 </el-button>
-          <el-button type="primary" @click="register()"> 确认 </el-button>
+          <el-button @click="registerFormVisible = false"> 取消</el-button>
+          <el-button type="primary" @click="register()"> 确认</el-button>
         </div>
       </el-dialog>
     </div>
@@ -119,71 +119,78 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import ErrorLog from "@/components/ErrorLog";
-import Screenfull from "@/components/Screenfull";
-import SizeSelect from "@/components/SizeSelect";
-import Search from "@/components/HeaderSearch";
-import { SUCCESS } from "dropzone";
-import AdminAPI from "@/api/user";
-import { getType, getName, getId } from "@/utils/auth"; // get type from cookie
-import MiddleUtil from "@/utils/MiddleUtil";
+import {mapGetters} from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
+import ErrorLog from '@/components/ErrorLog'
+import Screenfull from '@/components/Screenfull'
+import SizeSelect from '@/components/SizeSelect'
+// import Search from '@/components/HeaderSearch'
+import AdminAPI from '@/api/user'
+import {getId, getName, getType} from '@/utils/auth' // get type from cookie
+import MiddleUtil from '@/utils/MiddleUtil'
 
 export default {
+  components: {
+    Breadcrumb,
+    Hamburger,
+    ErrorLog,
+    Screenfull,
+    SizeSelect
+    // Search
+  },
   data() {
-    var nameRegex = new RegExp("[a-zA-Z0-9].{3,18}");
-    var passwordRegex = new RegExp("[a-zA-Z0-9].{5,18}");
-    //验证管理员名称是否被使用
+    var nameRegex = new RegExp('[a-zA-Z0-9].{3,18}')
+    var passwordRegex = new RegExp('[a-zA-Z0-9].{5,18}')
+    // 验证管理员名称是否被使用
     var validateName = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入管理员名称"));
+        callback(new Error('请输入管理员名称'))
       } else if (!nameRegex.test(value)) {
-        callback(new Error("用户名:4-18位字母或数字"));
+        callback(new Error('用户名:4-18位字母或数字'))
       } else {
         AdminAPI.testName(value).then((response) => {
-          if (response.msg == "used") {
-            callback(new Error("该用户名已被使用"));
+          if (response.msg === 'used') {
+            callback(new Error('该用户名已被使用'))
           } else {
-            callback();
+            callback()
           }
-        });
+        })
       }
-    };
+    }
 
-    //验证修改密码or注册  一次密码的合法性
+    // 验证修改密码or注册  一次密码的合法性
     var validatePass1 = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入密码"));
+        callback(new Error('请输入密码'))
       } else if (!passwordRegex.test(value)) {
-        callback(new Error("密码:6-18位字母或数字"));
+        callback(new Error('密码:6-18位字母或数字'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
-    //验证修改密码 二次密码的一致性
+    // 验证修改密码 二次密码的一致性
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.changePasswordData.newPassword1) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
-    //验证注册 二次密码的一致性
+    // 验证注册 二次密码的一致性
     var validatePass3 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.registerData.password1) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
     return {
       type: getType(),
@@ -192,175 +199,167 @@ export default {
       changePasswordData: {
         id: getId(),
         name: getName(),
-        oldPassword: "",
-        newPassword1: "",
-        newPassword2: "",
+        oldPassword: '',
+        newPassword1: '',
+        newPassword2: ''
       },
       registerData: {
-        name: "",
-        password1: "",
-        password2: "",
+        name: '',
+        password1: '',
+        password2: ''
       },
       changePasswordRules: {
-        //数据项的约束
+        // 数据项的约束
         oldPassword: [
-          { required: true, message: "请输入原密码", trigger: "blur" },
+          {required: true, message: '请输入原密码', trigger: 'blur'}
         ],
         newPassword1: [
-          { required: true, validator: validatePass1, trigger: "blur" },
+          {required: true, validator: validatePass1, trigger: 'blur'}
         ],
         newPassword2: [
-          { required: true, validator: validatePass2, trigger: "blur" },
-        ],
+          {required: true, validator: validatePass2, trigger: 'blur'}
+        ]
       },
       registerRules: {
-        name: [{ required: true, validator: validateName, trigger: "blur" }],
+        name: [{required: true, validator: validateName, trigger: 'blur'}],
         password1: [
-          { required: true, validator: validatePass1, trigger: "blur" },
+          {required: true, validator: validatePass1, trigger: 'blur'}
         ],
         password2: [
-          { required: true, validator: validatePass3, trigger: "blur" },
-        ],
-      },
-    };
-  },
-  components: {
-    Breadcrumb,
-    Hamburger,
-    ErrorLog,
-    Screenfull,
-    SizeSelect,
-    Search,
+          {required: true, validator: validatePass3, trigger: 'blur'}
+        ]
+      }
+    }
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar", "device"]),
+    ...mapGetters(['sidebar', 'avatar', 'device'])
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
+      this.$store.dispatch('app/toggleSideBar')
     },
 
-    //退出账号
+    // 退出账号
     async logout() {
-      await this.$store.dispatch("user/logout").then((response) => {
-        if (response.code == 200) {
-          this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+      await this.$store.dispatch('user/logout').then((response) => {
+        if (response.code === 200) {
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
           this.$message({
-            message: "退出成功",
-            type: "success",
-            duration:3000
-          });
+            message: '退出成功',
+            type: 'success',
+            duration: 3000
+          })
         } else {
           this.$message({
-            message: "退出失败",
-            type: "error",
-            duration:3000
-          });
+            message: '退出失败',
+            type: 'error',
+            duration: 3000
+          })
         }
-      });
+      })
     },
 
-    //修改本账号的密码
+    // 修改本账号的密码
     handleChangePassword() {
-      this.resetAdmin();
-      this.changePasswordFormVisible = true;
+      this.resetAdmin()
+      this.changePasswordFormVisible = true
       this.$nextTick(() => {
-        this.$refs["changePasswordForm"].clearValidate();
-      });
+        this.$refs['changePasswordForm'].clearValidate()
+      })
     },
-    //修改密码
+    // 修改密码
     async changePassword() {
-      this.$refs["changePasswordForm"].validate((valid) => {
+      this.$refs['changePasswordForm'].validate((valid) => {
         if (valid) {
           var data = {
             id: this.changePasswordData.id,
             oldPassword: this.changePasswordData.oldPassword,
-            newPassword: this.changePasswordData.newPassword1,
-          };
-          this.$store.dispatch("user/changePassword", data).then((response) => {
-            if (response.code == 200) {
-              this.changePasswordFormVisible = false;
-              this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+            newPassword: this.changePasswordData.newPassword1
+          }
+          this.$store.dispatch('user/changePassword', data).then((response) => {
+            if (response.code === 200) {
+              this.changePasswordFormVisible = false
+              this.$router.push(`/login?redirect=${this.$route.fullPath}`)
               this.$message({
-                message: "修改成功，请重新登录",
-                type: "success",
-                duration:3000
-              });
-            } else if (response.code == 408) {
+                message: '修改成功，请重新登录',
+                type: 'success',
+                duration: 3000
+              })
+            } else if (response.code === 408) {
               this.$message({
-                message: "原密码错误",
-                type: "error",
-                duration:3000
-              });
+                message: '原密码错误',
+                type: 'error',
+                duration: 3000
+              })
             } else {
               this.$message({
-                message: "修改失败",
-                type: "error",
-                duration:3000
-              });
+                message: '修改失败',
+                type: 'error',
+                duration: 3000
+              })
             }
-          });
+          })
         }
-      });
+      })
     },
 
-    //注册管理员
+    // 注册管理员
     handleRegister() {
-      this.resetRegister();
-      this.registerFormVisible = true;
+      this.resetRegister()
+      this.registerFormVisible = true
       this.$nextTick(() => {
-        this.$refs["registerForm"].clearValidate();
-      });
+        this.$refs['registerForm'].clearValidate()
+      })
     },
 
     register() {
-      this.$refs["registerForm"].validate((valid) => {
+      this.$refs['registerForm'].validate((valid) => {
         if (valid) {
           var data = {
             name: this.registerData.name,
-            password: this.registerData.password1,
-          };
+            password: this.registerData.password1
+          }
           AdminAPI.register(data).then((response) => {
             if (response.code === 200) {
               this.$notify({
-                title: "Success",
-                message: data.name + "注册成功",
-                type: "success",
-                duration: 3000,
-              });
-              MiddleUtil.$emit("register", "调用admin-mannger中的刷新列表方法");
+                title: 'Success',
+                message: data.name + '注册成功',
+                type: 'success',
+                duration: 3000
+              })
+              MiddleUtil.$emit('register', '调用admin-mannger中的刷新列表方法')
             } else if (response.code === 999) {
               this.$message({
-                message: "没有该权限!",
-                type: "error",
-                duration:3000
-              });
+                message: '没有该权限!',
+                type: 'error',
+                duration: 3000
+              })
             } else {
               this.$message({
-                message: "注册失败",
-                type: "error",
-                duration:3000
-              });
+                message: '注册失败',
+                type: 'error',
+                duration: 3000
+              })
             }
-          });
+          })
         }
-      });
-      this.registerFormVisible = false;
+      })
+      this.registerFormVisible = false
     },
 
     resetAdmin() {
-      this.oldPassword = "";
-      this.newPassword1 = "";
-      this.newPassword2 = "";
+      this.oldPassword = ''
+      this.newPassword1 = ''
+      this.newPassword2 = ''
     },
 
     resetRegister() {
-      this.registerData.name = "";
-      this.registerData.password1 = "";
-      this.registerData.password2 = "";
-    },
-  },
-};
+      this.registerData.name = ''
+      this.registerData.password1 = ''
+      this.registerData.password2 = ''
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -120,12 +120,12 @@ export default {
             }
             reader.readAsArrayBuffer(rawFile)
             this.loading = false
-            this.$alert(response.msg, '上传成功', {
+            this.$alert(response.msg, '所有记录上传成功', {
               type: 'success'
             })
           } else {
             const errors = response.extra.errors
-            this.$alert(errors, '上传失败', {
+            this.$alert(errors, '以下记录上传失败', {
               type: 'error'
             })
             this.loading = false

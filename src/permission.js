@@ -1,5 +1,4 @@
 import router from './router'
-import { asyncRoutes, constantRoutes } from '@/router'
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -9,9 +8,9 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect','/visitor'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/visitor'] // no redirect whitelist
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -35,11 +34,11 @@ router.beforeEach(async (to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          //后端未实现用户信息获取,在store/user下模拟获取，只支持admin模式
+          // 后端未实现用户信息获取,在store/user下模拟获取，只支持admin模式
           const { roles } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes',roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
           // hack method to ensure that addRoutes is complete

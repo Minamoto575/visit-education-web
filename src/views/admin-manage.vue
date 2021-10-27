@@ -35,19 +35,19 @@
       <el-table-column align="center" label="最新修改时间" min-width="8%">
         <template slot-scope="{ row }">
           <span>{{
-              new Date(row.gmtModified).toLocaleDateString() +
+            new Date(row.gmtModified).toLocaleDateString() +
               ' ' +
               new Date(row.gmtModified).toLocaleTimeString()
-            }}</span>
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="8%">
         <template slot-scope="{ row }">
           <span>{{
-              new Date(row.gmtCreate).toLocaleDateString() +
+            new Date(row.gmtCreate).toLocaleDateString() +
               ' ' +
               new Date(row.gmtCreate).toLocaleTimeString()
-            }}</span>
+          }}</span>
         </template>
       </el-table-column>
 
@@ -101,13 +101,13 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="用户" prop="name">
-          <el-input v-model="changePasswordData.name" :disabled="true"/>
+          <el-input v-model="changePasswordData.name" :disabled="true" />
         </el-form-item>
         <el-form-item label="新密码" prop="password1">
-          <el-input v-model="changePasswordData.password1"/>
+          <el-input v-model="changePasswordData.password1" />
         </el-form-item>
         <el-form-item label="新密码" prop="password2">
-          <el-input v-model="changePasswordData.password2"/>
+          <el-input v-model="changePasswordData.password2" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

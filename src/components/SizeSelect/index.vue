@@ -4,9 +4,15 @@
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size===item.value" :command="item.value">
+      <el-dropdown-item
+        v-for="item of sizeOptions"
+        :key="item.value"
+        :command="item.value"
+        :disabled="size===item.value"
+      >
         {{
-          item.label }}
+          item.label
+        }}
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -17,11 +23,11 @@ export default {
   data() {
     return {
       sizeOptions: [
-        //{ label: '大', value: 'big' },
+        // { label: '大', value: 'big' },
         { label: '大', value: 'default' },
         { label: '中等', value: 'medium' },
-        { label: '小', value: 'small' },
-        //{ label: '迷你', value: 'mini' }
+        { label: '小', value: 'small' }
+        // { label: '迷你', value: 'mini' }
       ]
     }
   },
@@ -38,7 +44,7 @@ export default {
       this.$message({
         message: '切换成功',
         type: 'success',
-        duration:3000
+        duration: 3000
       })
     },
     refreshView() {

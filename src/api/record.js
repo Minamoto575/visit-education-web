@@ -91,6 +91,14 @@ function listAll(data) {
   })
 }
 
+function deleteBatch(data) {
+  return request({
+    url: BaseUrl + '/delete/combination',
+    method: 'post',
+    data: data
+  })
+}
+
 export default {
   deleteRecord,
   postRecord,
@@ -102,5 +110,6 @@ export default {
   listSubjects,
   updateRecord,
   uploadExcel,
-  listAll
+  listAll,
+  deleteBatch
 }

@@ -87,6 +87,20 @@
         搜索
       </el-button>
 
+      <el-button
+        v-waves
+        :disabled="
+          this.listQuery.projectName === '' ||
+            this.listQuery.schoolName === ''
+        "
+        class="filter-item"
+        icon="el-icon-delete"
+        type="primary"
+        @click="handleDeleteBatch"
+      >
+        批量删除
+      </el-button>
+
       <!-- 添加记录 -->
       <el-button
         class="filter-item"
@@ -221,16 +235,16 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="学校" prop="schoolName">
-          <el-input v-model="temp.schoolName"/>
+          <el-input v-model="temp.schoolName" />
         </el-form-item>
         <el-form-item label="学科专业名称" prop="subjectName">
-          <el-input v-model="temp.subjectName"/>
+          <el-input v-model="temp.subjectName" />
         </el-form-item>
         <el-form-item label="学科专业代码" prop="subjectCode">
-          <el-input v-model="temp.subjectCode"/>
+          <el-input v-model="temp.subjectCode" />
         </el-form-item>
         <el-form-item label="导师姓名" prop="teacherName">
-          <el-input v-model="temp.teacherName"/>
+          <el-input v-model="temp.teacherName" />
         </el-form-item>
         <el-form-item label="课题名称" prop="taskName">
           <el-input
@@ -241,7 +255,7 @@
           />
         </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="temp.projectName"/>
+          <el-input v-model="temp.projectName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -575,6 +589,8 @@ export default {
                   this.listByTeacher()
                 } else if (this.presentedData === 'combination') {
                   this.listByCombination()
+                } else {
+                  this.listAllRecords()
                 }
               }
             } else {
@@ -588,6 +604,49 @@ export default {
           })
         })
         .catch(() => {
+        })
+    },
+
+    // 批量删除记录 学科名称可以为空
+    handleDeleteBatch() {
+      if (this.listQuery.projectName == '' || this.listQuery.schoolName == '') {
+        this.$message({
+          message: '项目名称和学校名称不能为空',
+          type: 'error',
+          duration: 3000
+        })
+        return
+      }
+      this.$confirm('此操作将永久这些记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      })
+        .then(() => {
+          const data = {
+            projectName: this.listQuery.projectName,
+            schoolName: this.listQuery.schoolName,
+            subjectName: this.listQuery.subjectName
+          }
+          RecordAPI.deleteBatch(data).then((response) => {
+            if (response.code === 200) {
+              this.$notify({
+                title: 'Success',
+                message: '删除成功',
+                type: 'success',
+                duration: 3000
+              })
+              this.resetCombinationSearch()
+              this.listAllRecords()
+            } else {
+              this.$notify({
+                title: 'Fail',
+                message: '删除失败',
+                type: 'error',
+                duration: 3000
+              })
+            }
+          })
         })
     },
 
@@ -684,11 +743,11 @@ export default {
     // excel上传成功
     uploadSuccess({ results, header }) {
       this.resetCombinationSearch()
+      this.listAllRecords()
     },
 
     // 重置组合搜索栏信息，任何更新可能导致其变化
     resetCombinationSearch() {
-      this.listProjects()
       this.listQuery.subjectName = ''
       this.listQuery.projectName = ''
       this.listQuery.schoolName = ''

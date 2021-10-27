@@ -1,16 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 /* Layout */
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+
+Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -79,8 +74,8 @@ export const constantRoutes = [
         path: 'recordManage',
         component: () => import('@/views/record-manage'),
         name: 'RecordManage',
-        meta: { title: '记录管理',icon:'list' }
-      },
+        meta: { title: '记录管理', icon: 'list' }
+      }
     ]
   },
   {
@@ -91,15 +86,15 @@ export const constantRoutes = [
         path: 'adminManage',
         component: () => import('@/views/admin-manage'),
         name: 'AdminManage',
-        meta: { title: '管理员管理',icon:'user' }
-      },
+        meta: { title: '管理员管理', icon: 'user' }
+      }
     ]
   },
   {
     path: '/visitor',
     component: () => import('@/views/visitor'),
-    name: 'Visitor',
-  },
+    name: 'Visitor'
+  }
 
   // {
   //   path: '/documentation',
@@ -219,10 +214,10 @@ export const asyncRoutes = [
   // },
 
   /** when your routing map is too long, you can split it into small modules **/
-  //componentsRouter,
-  //chartsRouter,
-  //nestedRouter,
-  //tableRouter,
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
+  // tableRouter,
 
   // {
   //   path: '/example',

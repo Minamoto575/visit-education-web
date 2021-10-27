@@ -3,8 +3,8 @@
     <el-pagination
       :background="background"
       :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
       :layout="layout"
+      :page-size.sync="pageSize"
       :page-sizes="pageSizes"
       :total="total"
       v-bind="$attrs"
@@ -35,7 +35,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [10,20,30]
+        return [10, 20, 30]
       }
     },
     layout: {
@@ -75,9 +75,9 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      var curMax = Math.min(this.currentPage*this.pageSize,this.total);
-      var newPage = Math.ceil(curMax/val);
-      console.log(newPage);
+      var curMax = Math.min(this.currentPage * this.pageSize, this.total)
+      var newPage = Math.ceil(curMax / val)
+      console.log(newPage)
       this.$emit('pagination', { page: newPage, limit: val })
       if (this.autoScroll) {
         scrollTo(0, 800)
@@ -98,6 +98,7 @@ export default {
   background: #fff;
   padding: 32px 16px;
 }
+
 .pagination-container.hidden {
   display: none;
 }
