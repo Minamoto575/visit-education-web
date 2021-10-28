@@ -7,18 +7,18 @@
       @toggleClick="toggleSideBar"
     />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <error-log class="errLog-container right-menu-item hover-effect"/>
+        <error-log class="errLog-container right-menu-item hover-effect" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
         <el-tooltip content="字体大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect"/>
+          <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
       </template>
 
@@ -28,7 +28,7 @@
       >
         <div class="avatar-wrapper">
           <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom"/>
+          <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/">
@@ -65,16 +65,16 @@
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">
-            <el-input v-model="changePasswordData.name" :disabled="true"/>
+            <el-input v-model="changePasswordData.name" :disabled="true" />
           </el-form-item>
           <el-form-item label="原密码：" prop="oldPassword">
-            <el-input v-model="changePasswordData.oldPassword"/>
+            <el-input v-model="changePasswordData.oldPassword" />
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword1">
-            <el-input v-model="changePasswordData.newPassword1"/>
+            <el-input v-model="changePasswordData.newPassword1" />
           </el-form-item>
           <el-form-item label="新密码：" prop="newPassword2">
-            <el-input v-model="changePasswordData.newPassword2"/>
+            <el-input v-model="changePasswordData.newPassword2" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -100,13 +100,13 @@
           style="width: 400px; margin-left: 50px"
         >
           <el-form-item label="用户名：" prop="name">
-            <el-input v-model="registerData.name"/>
+            <el-input v-model="registerData.name" />
           </el-form-item>
           <el-form-item label="密码：" prop="password1">
-            <el-input v-model="registerData.password1"/>
+            <el-input v-model="registerData.password1" />
           </el-form-item>
           <el-form-item label="密码：" prop="password2">
-            <el-input v-model="registerData.password2"/>
+            <el-input v-model="registerData.password2" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
@@ -127,7 +127,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 // import Search from '@/components/HeaderSearch'
 import AdminAPI from '@/api/user'
-import {getId, getName, getType} from '@/utils/auth' // get type from cookie
+import { getId, getName, getType } from '@/utils/auth' // get type from cookie
 import MiddleUtil from '@/utils/MiddleUtil'
 
 export default {
@@ -211,22 +211,22 @@ export default {
       changePasswordRules: {
         // 数据项的约束
         oldPassword: [
-          {required: true, message: '请输入原密码', trigger: 'blur'}
+          { required: true, message: '请输入原密码', trigger: 'blur' }
         ],
         newPassword1: [
-          {required: true, validator: validatePass1, trigger: 'blur'}
+          { required: true, validator: validatePass1, trigger: 'blur' }
         ],
         newPassword2: [
-          {required: true, validator: validatePass2, trigger: 'blur'}
+          { required: true, validator: validatePass2, trigger: 'blur' }
         ]
       },
       registerRules: {
-        name: [{required: true, validator: validateName, trigger: 'blur'}],
+        name: [{ required: true, validator: validateName, trigger: 'blur' }],
         password1: [
-          {required: true, validator: validatePass1, trigger: 'blur'}
+          { required: true, validator: validatePass1, trigger: 'blur' }
         ],
         password2: [
-          {required: true, validator: validatePass3, trigger: 'blur'}
+          { required: true, validator: validatePass3, trigger: 'blur' }
         ]
       }
     }

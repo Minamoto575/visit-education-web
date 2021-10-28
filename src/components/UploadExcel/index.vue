@@ -10,7 +10,6 @@
     <el-button
       :loading="loading"
       icon="el-icon-upload"
-      size="medium"
       style="margin-left: 16px"
       type="primary"
       @click="handleUpload"
@@ -34,6 +33,7 @@ export default {
     return {
       loading: false,
       doCheck: true,
+      errorsList: [],
       excelData: {
         header: null,
         results: null
@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    generateData({ header, results }) {
+    generateData({header, results}) {
       this.excelData.header = header
       this.excelData.results = results
       this.onSuccess && this.onSuccess(this.excelData)
@@ -104,6 +104,7 @@ export default {
         // 上传到后端
         const data = new FormData()
         data.append('file', rawFile)
+        console.log(this.doCheck ? '后台开启检查' : '后台关闭检查')
         RecordAPI.uploadExcel(data, this.doCheck).then((response) => {
           console.log(this.doCheck)
           if (response.code === 200) {
@@ -111,12 +112,12 @@ export default {
             const reader = new FileReader()
             reader.onload = (e) => {
               const data = e.target.result
-              const workbook = XLSX.read(data, { type: 'array' })
+              const workbook = XLSX.read(data, {type: 'array'})
               const firstSheetName = workbook.SheetNames[0]
               const worksheet = workbook.Sheets[firstSheetName]
               const header = this.getHeaderRow(worksheet)
               const results = XLSX.utils.sheet_to_json(worksheet)
-              this.generateData({ header, results })
+              this.generateData({header, results})
             }
             reader.readAsArrayBuffer(rawFile)
             this.loading = false
@@ -124,10 +125,11 @@ export default {
               type: 'success'
             })
           } else {
-            const errors = response.extra.errors
-            this.$alert(errors, '以下记录上传失败', {
+            this.errorsList = response.extra.errors
+            this.$alert('部分记录上传失败，具体原因请查看excel《错误信息汇总》', '部分记录上传失败', {
               type: 'error'
             })
+            this.handleDownload()
             this.loading = false
           }
           resolve()
@@ -143,7 +145,7 @@ export default {
       /* start in the first row */
       for (C = range.s.c; C <= range.e.c; ++C) {
         /* walk every column in the range */
-        const cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })]
+        const cell = sheet[XLSX.utils.encode_cell({c: C, r: R})]
         /* find the cell in the first row */
         let hdr = 'UNKNOWN ' + C // <-- replace with your desired default
         if (cell && cell.t) hdr = XLSX.utils.format_cell(cell)
@@ -153,6 +155,48 @@ export default {
     },
     isExcel(file) {
       return /\.(xlsx|xls|csv)$/.test(file.name)
+    },
+    // 导出excel错误信息
+    handleDownload() {
+      import('@/vendor/Export2Excel').then((excel) => {
+        const tHeader = [
+          'sheet名称',
+          '错误类型',
+          '总序号',
+          '学校名称',
+          '学科专业名称',
+          '学科专业代码',
+          '教师姓名',
+          '课题名称',
+          '项目名称'
+        ]
+        const filterVal = [
+          'sheetName',
+          'errorType',
+          'rowIndex',
+          'schoolName',
+          'subjectName',
+          'subjectCode',
+          'teacherName',
+          'taskName',
+          'projectName'
+        ]
+        const data = this.formatJson(filterVal)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '错误信息汇总'
+        })
+      })
+    },
+
+    // json转化为object
+    formatJson(filterVal) {
+      return this.errorsList.map((v) =>
+        filterVal.map((j) => {
+          return v[j]
+        })
+      )
     }
   }
 }

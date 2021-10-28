@@ -118,6 +118,7 @@
         :on-success="uploadSuccess"
         class="filter-item"
         style="margin-left: -5px; margin-right: 10px"
+        type="primary"
       />
 
       <!-- excel导出 -->
@@ -235,16 +236,16 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="学校" prop="schoolName">
-          <el-input v-model="temp.schoolName" />
+          <el-input v-model="temp.schoolName"/>
         </el-form-item>
         <el-form-item label="学科专业名称" prop="subjectName">
-          <el-input v-model="temp.subjectName" />
+          <el-input v-model="temp.subjectName"/>
         </el-form-item>
         <el-form-item label="学科专业代码" prop="subjectCode">
-          <el-input v-model="temp.subjectCode" />
+          <el-input v-model="temp.subjectCode"/>
         </el-form-item>
         <el-form-item label="导师姓名" prop="teacherName">
-          <el-input v-model="temp.teacherName" />
+          <el-input v-model="temp.teacherName"/>
         </el-form-item>
         <el-form-item label="课题名称" prop="taskName">
           <el-input
@@ -255,7 +256,7 @@
           />
         </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="temp.projectName" />
+          <el-input v-model="temp.projectName"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -279,8 +280,8 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 
 export default {
   name: 'RecordManage',
-  components: { Pagination, UploadExcelComponent },
-  directives: { waves },
+  components: {Pagination, UploadExcelComponent},
+  directives: {waves},
   filters: {},
   data() {
     return {
@@ -317,22 +318,22 @@ export default {
       // 数据项的约束
       rules: {
         schoolName: [
-          { required: true, message: '学校不能为空', trigger: 'blur' }
+          {required: true, message: '学校不能为空', trigger: 'blur'}
         ],
         subjectName: [
-          { required: true, message: '专业名称不能为空', trigger: 'blur' }
+          {required: true, message: '专业名称不能为空', trigger: 'blur'}
         ],
         subjectCode: [
-          { required: true, message: '专业代码不能为空', trigger: 'blur' }
+          {required: true, message: '专业代码不能为空', trigger: 'blur'}
         ],
         teacherName: [
-          { required: true, message: '导师姓名不能为空', trigger: 'blur' }
+          {required: true, message: '导师姓名不能为空', trigger: 'blur'}
         ],
         taskName: [
-          { required: true, message: '课题名称不能为空', trigger: 'blur' }
+          {required: true, message: '课题名称不能为空', trigger: 'blur'}
         ],
         projectName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
+          {required: true, message: '项目名称不能为空', trigger: 'blur'}
         ]
       },
       downloadLoading: false,
@@ -741,7 +742,7 @@ export default {
     },
 
     // excel上传成功
-    uploadSuccess({ results, header }) {
+    uploadSuccess({results, header}) {
       this.resetCombinationSearch()
       this.listAllRecords()
     },
