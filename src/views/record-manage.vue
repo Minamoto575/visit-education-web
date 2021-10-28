@@ -74,11 +74,7 @@
 
       <el-button
         v-waves
-        :disabled="
-          this.listQuery.projectName === '' ||
-            this.listQuery.schoolName === '' ||
-            this.listQuery.subjectName === ''
-        "
+        :disabled=" this.listQuery.projectName === '' "
         class="filter-item"
         icon="el-icon-search"
         type="primary"
@@ -89,10 +85,7 @@
 
       <el-button
         v-waves
-        :disabled="
-          this.listQuery.projectName === '' ||
-            this.listQuery.schoolName === ''
-        "
+        :disabled="this.listQuery.projectName === ''"
         class="filter-item"
         icon="el-icon-delete"
         type="primary"
@@ -285,13 +278,14 @@ export default {
   filters: {},
   data() {
     return {
-      projectList: [],
-      schoolList: [],
-      subjectList: [],
+      projectList: [],  // 项目列表
+      schoolList: [],   // 学校列表
+      subjectList: [],  // 课题列表
       tableKey: 0,
-      list: [],
-      total: 0,
-      listLoading: false,
+      list: [],    // 展示的数据列表（只是分页的数据）
+      total: 0,    // 数据总数
+      listLoading: false,   // 加载标识符
+      // 进行查询用到的数据
       listQuery: {
         page: 1,
         limit: 10,
@@ -337,7 +331,7 @@ export default {
         ]
       },
       downloadLoading: false,
-      ModifyIndex: -1,
+      ModifyIndex: -1, // 当前修改数据项的索引
       presentedData: '' // 展示组合搜索的数据  还是教师名称搜索的数据
     }
   },
@@ -386,12 +380,10 @@ export default {
     listByCombination() {
       const query = this.listQuery
       if (
-        query.projectName === '' ||
-        query.schoolName === '' ||
-        query.subjectName === ''
+        query.projectName === ''
       ) {
         this.$message({
-          message: '组合搜索栏存在空项!',
+          message: '项目名称不能为空!',
           type: 'warning',
           duration: 3000
         })
@@ -450,11 +442,13 @@ export default {
       this.listQuery.page = val.page
       this.listQuery.limit = val.limit
       if (this.presentedData === 'teacher') {
+        // 导师名称模糊查询
         this.listByTeacher()
       } else if (this.presentedData === 'combination') {
+        // 组合查询
         this.listByCombination()
       } else {
-        // 初始化展示所有数据的分页操作
+        // 查询所以数据
         this.listAllRecords()
       }
     },
@@ -610,9 +604,9 @@ export default {
 
     // 批量删除记录 学科名称可以为空
     handleDeleteBatch() {
-      if (this.listQuery.projectName == '' || this.listQuery.schoolName == '') {
+      if (this.listQuery.projectName == '') {
         this.$message({
-          message: '项目名称和学校名称不能为空',
+          message: '项目名称不能为空',
           type: 'error',
           duration: 3000
         })
@@ -637,7 +631,13 @@ export default {
                 type: 'success',
                 duration: 3000
               })
+              // 更新项目列表
+              this.listProjects();
+              // 重置组合搜索栏
               this.resetCombinationSearch()
+              // 删除后展示所以数据
+              this.page = 1
+              this.presentedData = 'all'
               this.listAllRecords()
             } else {
               this.$notify({
@@ -743,7 +743,9 @@ export default {
 
     // excel上传成功
     uploadSuccess({results, header}) {
+      this.listProjects()
       this.resetCombinationSearch()
+      this.listQuery.page = 1
       this.listAllRecords()
     },
 
