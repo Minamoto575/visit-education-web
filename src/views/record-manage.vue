@@ -229,16 +229,16 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="学校" prop="schoolName">
-          <el-input v-model="temp.schoolName"/>
+          <el-input v-model="temp.schoolName" />
         </el-form-item>
         <el-form-item label="学科专业名称" prop="subjectName">
-          <el-input v-model="temp.subjectName"/>
+          <el-input v-model="temp.subjectName" />
         </el-form-item>
         <el-form-item label="学科专业代码" prop="subjectCode">
-          <el-input v-model="temp.subjectCode"/>
+          <el-input v-model="temp.subjectCode" />
         </el-form-item>
         <el-form-item label="导师姓名" prop="teacherName">
-          <el-input v-model="temp.teacherName"/>
+          <el-input v-model="temp.teacherName" />
         </el-form-item>
         <el-form-item label="课题名称" prop="taskName">
           <el-input
@@ -249,7 +249,7 @@
           />
         </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="temp.projectName"/>
+          <el-input v-model="temp.projectName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -273,18 +273,18 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 
 export default {
   name: 'RecordManage',
-  components: {Pagination, UploadExcelComponent},
-  directives: {waves},
+  components: { Pagination, UploadExcelComponent },
+  directives: { waves },
   filters: {},
   data() {
     return {
-      projectList: [],  // 项目列表
-      schoolList: [],   // 学校列表
-      subjectList: [],  // 课题列表
+      projectList: [], // 项目列表
+      schoolList: [], // 学校列表
+      subjectList: [], // 课题列表
       tableKey: 0,
-      list: [],    // 展示的数据列表（只是分页的数据）
-      total: 0,    // 数据总数
-      listLoading: false,   // 加载标识符
+      list: [], // 展示的数据列表（只是分页的数据）
+      total: 0, // 数据总数
+      listLoading: false, // 加载标识符
       // 进行查询用到的数据
       listQuery: {
         page: 1,
@@ -312,22 +312,22 @@ export default {
       // 数据项的约束
       rules: {
         schoolName: [
-          {required: true, message: '学校不能为空', trigger: 'blur'}
+          { required: true, message: '学校不能为空', trigger: 'blur' }
         ],
         subjectName: [
-          {required: true, message: '专业名称不能为空', trigger: 'blur'}
+          { required: true, message: '专业名称不能为空', trigger: 'blur' }
         ],
         subjectCode: [
-          {required: true, message: '专业代码不能为空', trigger: 'blur'}
+          { required: true, message: '专业代码不能为空', trigger: 'blur' }
         ],
         teacherName: [
-          {required: true, message: '导师姓名不能为空', trigger: 'blur'}
+          { required: true, message: '导师姓名不能为空', trigger: 'blur' }
         ],
         taskName: [
-          {required: true, message: '课题名称不能为空', trigger: 'blur'}
+          { required: true, message: '课题名称不能为空', trigger: 'blur' }
         ],
         projectName: [
-          {required: true, message: '项目名称不能为空', trigger: 'blur'}
+          { required: true, message: '项目名称不能为空', trigger: 'blur' }
         ]
       },
       downloadLoading: false,
@@ -632,7 +632,7 @@ export default {
                 duration: 3000
               })
               // 更新项目列表
-              this.listProjects();
+              this.listProjects()
               // 重置组合搜索栏
               this.resetCombinationSearch()
               // 删除后展示所以数据
@@ -742,7 +742,7 @@ export default {
     },
 
     // excel上传成功
-    uploadSuccess({results, header}) {
+    uploadSuccess({ results, header }) {
       this.listProjects()
       this.resetCombinationSearch()
       this.listQuery.page = 1
