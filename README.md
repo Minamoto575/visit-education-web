@@ -21,3 +21,8 @@
 `api`中`user`和`record`是自定义的，其他是原项目自带的，没有用到
 
 后端没有实现`getinfo`来动态路由，只是模拟返回
+
+**项目部署**
+1.`npm run build:prod` 项目打包 生成`dist`目录
+2.通过`webStorm`的`docker`插件部署在`nginx`,配置见`Dockerfile`和`default.conf`
+3.`docker`的`9527`端口映射服务器的`80`端口
