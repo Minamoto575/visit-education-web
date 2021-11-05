@@ -1,7 +1,7 @@
-**项目概述**
-国内访问学者系统基于`vue-element-admin`修改
 
+**国内访问学者系统前端**
 
+前端基于`vue-element-admin`修改
 
 主要由四个页面组成：
 
@@ -18,6 +18,8 @@
 `api`中`user`和`record`是自定义的，其他是原项目自带的，没有用到
 
 后端没有实现`getinfo`来动态路由，只是模拟返回
+
+后端代码：https://github.com/Minamoto575/visit-education-web
 
 **项目部署**
 
