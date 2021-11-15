@@ -323,7 +323,7 @@ export default {
           projectName: projectName,
           schoolName: value
         }
-        RecordAPI.listSujects(data).then((response) => {
+        RecordAPI.listSubjects(data).then((response) => {
           this.subjectList = response.extra.subjects
         })
       } else {
