@@ -8,7 +8,7 @@ const service = axios.create({
   // baseURL: 'http://localhost:8575',
   baseURL: 'https://www.krl.cool/fwxz-backend',
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // timeout: 5000, // request timeout
+  timeout: 300000, // request timeout
   withCredentials: true // 允许携带cookies
 })
 
