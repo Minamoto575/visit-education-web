@@ -9,25 +9,6 @@
     <div class="filter-container" style="text-align: center; margin-top: 30px">
       <img src="@/assets/welcome-search.png" style="margin-top: -230px">
       <div style="margin-top: -270px">
-        <!-- 模糊搜索栏 -->
-        <el-input
-          v-model="listQuery.teacherName"
-          class="filter-item"
-          placeholder="导师姓名"
-          style="width: 200px; margin-right: 10px"
-          @keyup.enter.native="handleListByTeacher"
-        />
-        <el-button
-          v-waves
-          :disabled="this.listQuery.teacherName === ''"
-          class="filter-item"
-          icon="el-icon-search"
-          style="margin-right: 10px"
-          type="primary"
-          @click="handleListByTeacher"
-        >
-          搜索
-        </el-button>
 
         <!-- 组合搜索栏 -->
         <el-select
@@ -91,6 +72,26 @@
           icon="el-icon-search"
           type="primary"
           @click="handleListByCombination"
+        >
+          搜索
+        </el-button>
+
+        <!-- 模糊搜索栏 -->
+        <el-input
+          v-model="listQuery.teacherName"
+          class="filter-item"
+          placeholder="导师姓名"
+          style="width: 200px; margin-right: 10px;margin-left: 10px"
+          @keyup.enter.native="handleListByTeacher"
+        />
+        <el-button
+          v-waves
+          :disabled="this.listQuery.teacherName === ''"
+          class="filter-item"
+          icon="el-icon-search"
+          style="margin-right: 10px"
+          type="primary"
+          @click="handleListByTeacher"
         >
           搜索
         </el-button>

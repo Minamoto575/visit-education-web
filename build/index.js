@@ -10,8 +10,8 @@ if (process.env.npm_config_preview || rawArgv.includes('--preview')) {
   run(`vue-cli-service build ${args}`)
 
   const port = 9526
-  const publicPath = config.publicPath
-
+  // const publicPath = config.publicPath
+  const publicPath='../../'
   var connect = require('connect')
   var serveStatic = require('serve-static')
   const app = connect()

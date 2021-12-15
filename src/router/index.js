@@ -68,20 +68,20 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/recordManage',
+    redirect: '/visitor'
+  },
+  {
+    path: '/gl',
+    component: Layout,
+    redirect: 'gl/recordManage',
+    meta: { title: '管理', icon: 'table' },
     children: [
       {
         path: 'recordManage',
         component: () => import('@/views/record-manage'),
         name: 'RecordManage',
         meta: { title: '记录管理', icon: 'list' }
-      }
-    ]
-  },
-  {
-    path: '/admin',
-    component: Layout,
-    children: [
+      },
       {
         path: 'adminManage',
         component: () => import('@/views/admin-manage'),
