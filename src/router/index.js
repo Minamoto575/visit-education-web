@@ -87,6 +87,12 @@ export const constantRoutes = [
         component: () => import('@/views/admin-manage'),
         name: 'AdminManage',
         meta: { title: '管理员管理', icon: 'user' }
+      },
+      {
+        path: 'notice',
+        component: () => import('@/views/notice'),
+        name: 'notice',
+        meta: { title: '通知发布', icon: 'guide' }
       }
     ]
   },

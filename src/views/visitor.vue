@@ -1,16 +1,13 @@
 <template>
   <div class="app-container">
-    <div class="welcome_header">
+    <div class="welcome_header" style="z-index:1">
       <img
         src="@/assets/welcome-header.jpg"
-        style="margin-left: -20px; margin-top: -30px"
+        style="z-index:1; margin-left: -20px; margin-top: -30px"
       >
     </div>
-    <div class="filter-container" style="text-align: center; margin-top: 30px">
-      <img src="@/assets/welcome-search.png" style="margin-top: -230px">
-      <div style="margin-top: -270px">
-
-        <!-- 组合搜索栏 -->
+    <div class="visitor-filter-container" style="position: relative;height:280px; z-index:2; text-align: center;margin-top: -200px; margin-left: 250px;margin-right:250px">
+      <el-row style="margin-top:40px; display: inline-block; horizontal-align: middle;">
         <el-select
           v-model="listQuery.projectName"
           class="filter-item"
@@ -95,11 +92,20 @@
         >
           搜索
         </el-button>
-      </div>
-      <p class="search_tips">
-        本系统数据来源于2021年项目数据。<br>
-        中西部高校青年骨干教师国内访问学者项目的申请人，必须选择“中西部青年骨干教师访学项目”，<br>
-        再选择学校、专业、导师。一般国内访问学者项目的申请人，在数据库中可以选择骨干项目的导师和一般项目的导师。
+      </el-row>
+
+      <p style="width:60%;margin-left:20%;margin-top: 30px">
+        <el-row style="display: inline-block;font-size:18px">
+          <span>
+            {{ noticeContent }}
+          </span>
+        </el-row>
+        <br>
+        <el-row style="display: inline-block;margin-top: 20px">
+          <span>
+            {{ new Date(noticeTime).toLocaleDateString() }}
+          </span>
+        </el-row>
       </p>
     </div>
 
@@ -111,7 +117,7 @@
       border
       fit
       highlight-current-row
-      style="width: 70%; margin-left: 15%; margin-top: 60px"
+      style="width: 70%; margin-left: 15%; margin-top: 30px"
     >
       <el-table-column align="center" label="序号" min-width="5%" prop="id">
         <template slot-scope="{ $index }">
@@ -171,6 +177,7 @@
 
 <script>
 import RecordAPI from '@/api/record'
+import NoticeAPI from '@/api/notice'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -196,16 +203,26 @@ export default {
         schoolName: '',
         subjectName: ''
       },
-
-      presentedData: '' // 展示组合搜索的数据  还是教师名称搜索的数据
+      presentedData: '', // 展示组合搜索的数据  还是教师名称搜索的数据
+      noticeContent: '',
+      noticeTime: ''
     }
   },
   created() {
     // 获取所有项目名称
     this.listProjects()
+    this.getLatestNotice()
   },
   methods: {
     init() {
+    },
+
+    // 查询最新的通知
+    getLatestNotice() {
+      NoticeAPI.getLatestNotice().then((response) => {
+        this.noticeContent = response.extra.notice.content
+        this.noticeTime = response.extra.notice.gmtCreate
+      })
     },
 
     // 查询系统所有项目
@@ -342,3 +359,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+.visitor-filter-container{
+  z-index:999;
+  background-image: url("../assets/welcome-search.png");
+  background-size: auto;
+  background-size: cover;
+}
+
+</style>
