@@ -5,7 +5,7 @@ const BaseUrl = '/record'
 function deleteRecord(id) {
   return request({
     url: BaseUrl + '/delete',
-    method: 'delete',
+    method: 'post',
     params: { id }
   })
 }
@@ -67,7 +67,7 @@ function listSubjects(data) {
 function updateRecord(data) {
   return request({
     url: BaseUrl + '/update',
-    method: 'put',
+    method: 'post',
     data
   })
 }

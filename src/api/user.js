@@ -34,7 +34,7 @@ export function changePassword(data) {
 export function deleteAdmin(deleteId) {
   return request({
     url: '/admin/delete',
-    method: 'delete',
+    method: 'post',
     params: { deleteId }
   })
 }
