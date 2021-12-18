@@ -1,118 +1,138 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="text-align: center">
-      <!-- 模糊搜索栏 -->
-      <el-input
-        v-model="listQuery.teacherName"
-        class="filter-item"
-        placeholder="导师姓名"
-        style="width: 200px; margin-right: 10px"
-        @keyup.enter.native="handleListByTeacher"
-      />
-      <el-button
-        v-waves
-        :disabled="this.listQuery.teacherName === ''"
-        class="filter-item"
-        icon="el-icon-search"
-        style="margin-right: 10px"
-        type="primary"
-        @click="handleListByTeacher"
-      >
-        搜索
-      </el-button>
+    <div class="filter-container">
+      <el-row :gutter="10">
+        <!-- 模糊搜索栏 -->
+        <el-col :xs="12" :sm="12" :md="6" :lg="4" :xl="2">
+          <el-input
+            v-model="listQuery.teacherName"
+            class="filter-item"
+            placeholder="导师姓名"
+            style="width: 100%"
+            @keyup.enter.native="handleListByTeacher"
+          />
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="6" :lg="4" :xl="2">
+          <el-button
+            v-waves
+            :disabled="this.listQuery.teacherName === ''"
+            class="filter-item"
+            icon="el-icon-search"
+            type="primary"
+            style="width: 100%"
+            @click="handleListByTeacher"
+          >
+            搜索
+          </el-button>
+        </el-col>
+
+        <el-col :xs="24" :sm="8" :md="6" :lg="4" :xl="4">
+          <el-select
+            v-model="listQuery.projectName"
+            class="filter-item"
+            clearable
+            placeholder="项目名称"
+            style="width: 100%"
+            @change="projectChanged"
+          >
+            <el-option
+              v-for="item in projectList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col :xs="24" :sm="8" :md="6" :lg="4" :xl="3">
+          <el-select
+            v-model="listQuery.schoolName"
+            :disabled="listQuery.projectName === ''"
+            class="filter-item"
+            clearable
+            placeholder="学校名称"
+            style="width: 100%"
+            @change="schoolChanged"
+          >
+            <el-option
+              v-for="item in schoolList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col :xs="24" :sm="8" :md="6" :lg="4" :xl="3">
+          <el-select
+            v-model="listQuery.subjectName"
+            :disabled="listQuery.schoolName === ''"
+            class="filter-item"
+            clearable
+            disabele
+            placeholder="学科名称"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in subjectList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col :xs="12" :sm="8" :md="4" :lg="4" :xl="2">
+          <el-button
+            v-waves
+            :disabled=" this.listQuery.projectName === '' "
+            class="filter-item"
+            icon="el-icon-search"
+            type="primary"
+            style="width: 100%"
+            @click="handleListByCombination"
+          >
+            搜索
+          </el-button>
+        </el-col>
+        <el-col :xs="12" :sm="8" :md="4" :lg="4" :xl="2">
+          <el-button
+            v-waves
+            :disabled="this.listQuery.projectName === ''"
+            class="filter-item"
+            icon="el-icon-delete"
+            type="primary"
+            style="width: 100%"
+            @click="handleDeleteBatch"
+          >
+            批量删除
+          </el-button>
+        </el-col>
+        <el-col :xs="12" :sm="8" :md="4" :lg="4" :xl="2">
+          <el-button
+            class="filter-item"
+            icon="el-icon-edit"
+            type="primary"
+            style="width: 100%"
+            @click="handleCreate"
+          >
+            添加
+          </el-button>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
+          <!-- excel导入 -->
+          <upload-excel-component
+            :before-upload="beforeUpload"
+            :on-success="uploadSuccess"
+            class="filter-item"
+            type="primary"
+            style="width: 100%"
+          />
+        </el-col>
+        <!--        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="2">-->
+        <!--          -->
+        <!--        </el-col>-->
+
+      </el-row>
 
       <!-- 组合搜索栏 -->
-      <el-select
-        v-model="listQuery.projectName"
-        class="filter-item"
-        clearable
-        placeholder="项目名称"
-        style="width: 200px; margin-right: 10px"
-        @change="projectChanged"
-      >
-        <el-option
-          v-for="item in projectList"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-
-      <el-select
-        v-model="listQuery.schoolName"
-        :disabled="listQuery.projectName === ''"
-        class="filter-item"
-        clearable
-        placeholder="学校名称"
-        style="width: 200px; margin-right: 10px"
-        @change="schoolChanged"
-      >
-        <el-option
-          v-for="item in schoolList"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-
-      <el-select
-        v-model="listQuery.subjectName"
-        :disabled="listQuery.schoolName === ''"
-        class="filter-item"
-        clearable
-        disabele
-        placeholder="学科名称"
-        style="width: 200px; margin-right: 10px"
-      >
-        <el-option
-          v-for="item in subjectList"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-
-      <el-button
-        v-waves
-        :disabled=" this.listQuery.projectName === '' "
-        class="filter-item"
-        icon="el-icon-search"
-        type="primary"
-        @click="handleListByCombination"
-      >
-        搜索
-      </el-button>
-
-      <el-button
-        v-waves
-        :disabled="this.listQuery.projectName === ''"
-        class="filter-item"
-        icon="el-icon-delete"
-        type="primary"
-        @click="handleDeleteBatch"
-      >
-        批量删除
-      </el-button>
-
-      <!-- 添加记录 -->
-      <el-button
-        class="filter-item"
-        icon="el-icon-edit"
-        style="margin-left: 10px"
-        type="primary"
-        @click="handleCreate"
-      >
-        添加
-      </el-button>
-
-      <!-- excel导入 -->
-      <upload-excel-component
-        :before-upload="beforeUpload"
-        :on-success="uploadSuccess"
-        class="filter-item"
-        style="margin-left: -5px; margin-right: 10px"
-        type="primary"
-      />
 
       <!-- excel导出 -->
       <!-- <el-button
@@ -604,7 +624,7 @@ export default {
 
     // 批量删除记录 学科名称可以为空
     handleDeleteBatch() {
-      if (this.listQuery.projectName == '') {
+      if (this.listQuery.projectName === '') {
         this.$message({
           message: '项目名称不能为空',
           type: 'error',

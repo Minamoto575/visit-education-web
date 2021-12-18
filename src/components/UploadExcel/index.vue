@@ -10,7 +10,7 @@
     <el-button
       :loading="loading"
       icon="el-icon-upload"
-      style="margin-left: 16px"
+      style=""
       type="primary"
       @click="handleUpload"
     >
@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    generateData({header, results}) {
+    generateData({ header, results }) {
       this.excelData.header = header
       this.excelData.results = results
       this.onSuccess && this.onSuccess(this.excelData)
@@ -112,12 +112,12 @@ export default {
             const reader = new FileReader()
             reader.onload = (e) => {
               const data = e.target.result
-              const workbook = XLSX.read(data, {type: 'array'})
+              const workbook = XLSX.read(data, { type: 'array' })
               const firstSheetName = workbook.SheetNames[0]
               const worksheet = workbook.Sheets[firstSheetName]
               const header = this.getHeaderRow(worksheet)
               const results = XLSX.utils.sheet_to_json(worksheet)
-              this.generateData({header, results})
+              this.generateData({ header, results })
             }
             reader.readAsArrayBuffer(rawFile)
             this.loading = false
@@ -145,7 +145,7 @@ export default {
       /* start in the first row */
       for (C = range.s.c; C <= range.e.c; ++C) {
         /* walk every column in the range */
-        const cell = sheet[XLSX.utils.encode_cell({c: C, r: R})]
+        const cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })]
         /* find the cell in the first row */
         let hdr = 'UNKNOWN ' + C // <-- replace with your desired default
         if (cell && cell.t) hdr = XLSX.utils.format_cell(cell)

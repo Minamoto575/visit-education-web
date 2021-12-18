@@ -1,113 +1,109 @@
 <template>
   <div class="app-container">
-    <div class="welcome_header" style="z-index:1">
-      <img
-        src="@/assets/welcome-header.jpg"
-        style="z-index:1; margin-left: -20px; margin-top: -30px"
-      >
+    <div class="welcome_header">
+      国内访问学者查询系统
     </div>
-    <div class="visitor-filter-container" style="position: relative;height:280px; z-index:2; text-align: center;margin-top: -200px; margin-left: 250px;margin-right:250px">
-      <el-row style="margin-top:40px; display: inline-block; horizontal-align: middle;">
-        <el-select
-          v-model="listQuery.projectName"
-          class="filter-item"
-          clearable
-          placeholder="项目名称"
-          style="width: 200px; margin-right: 10px"
-          @change="projectChanged"
-        >
-          <el-option
-            v-for="item in projectList"
-            :key="item"
-            :label="item"
-            :value="item"
+    <el-divider />
+    <div class="krl">
+      <el-row :gutter="10">
+        <el-col class="krl2" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
+          <el-select
+            v-model="listQuery.projectName"
+            clearable
+            placeholder="项目名称"
+            style="width: 100%"
+            @change="projectChanged"
+          >
+            <el-option
+              v-for="item in projectList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+          <el-select
+            v-model="listQuery.schoolName"
+            :disabled="listQuery.projectName === ''"
+            clearable
+            placeholder="学校名称"
+            style="width: 100%"
+            @change="schoolChanged"
+          >
+            <el-option
+              v-for="item in schoolList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+          <el-select
+            v-model="listQuery.subjectName"
+            :disabled="listQuery.schoolName === ''"
+            clearable
+            disabele
+            placeholder="学科名称"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in subjectList"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-col>
+        <el-col class="krl2" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
+          <el-button
+            v-waves
+            :disabled="
+              this.listQuery.projectName === '' ||
+                this.listQuery.schoolName === '' ||
+                this.listQuery.subjectName === ''
+            "
+            icon="el-icon-search"
+            type="primary"
+            style="width: 100%"
+            @click="handleListByCombination"
+          >
+            搜索
+          </el-button>
+        </el-col>
+        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+          <!-- 模糊搜索栏 -->
+          <el-input
+            v-model="listQuery.teacherName"
+            placeholder="导师姓名"
+            style="width: 100%"
+            @keyup.enter.native="handleListByTeacher"
           />
-        </el-select>
-
-        <el-select
-          v-model="listQuery.schoolName"
-          :disabled="listQuery.projectName === ''"
-          class="filter-item"
-          clearable
-          placeholder="学校名称"
-          style="width: 200px; margin-right: 10px"
-          @change="schoolChanged"
-        >
-          <el-option
-            v-for="item in schoolList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-
-        <el-select
-          v-model="listQuery.subjectName"
-          :disabled="listQuery.schoolName === ''"
-          class="filter-item"
-          clearable
-          disabele
-          placeholder="学科名称"
-          style="width: 200px; margin-right: 10px"
-        >
-          <el-option
-            v-for="item in subjectList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-
-        <el-button
-          v-waves
-          :disabled="
-            this.listQuery.projectName === '' ||
-              this.listQuery.schoolName === '' ||
-              this.listQuery.subjectName === ''
-          "
-          class="filter-item"
-          icon="el-icon-search"
-          type="primary"
-          @click="handleListByCombination"
-        >
-          搜索
-        </el-button>
-
-        <!-- 模糊搜索栏 -->
-        <el-input
-          v-model="listQuery.teacherName"
-          class="filter-item"
-          placeholder="导师姓名"
-          style="width: 200px; margin-right: 10px;margin-left: 10px"
-          @keyup.enter.native="handleListByTeacher"
-        />
-        <el-button
-          v-waves
-          :disabled="this.listQuery.teacherName === ''"
-          class="filter-item"
-          icon="el-icon-search"
-          style="margin-right: 10px"
-          type="primary"
-          @click="handleListByTeacher"
-        >
-          搜索
-        </el-button>
+        </el-col>
+        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+          <el-button
+            v-waves
+            :disabled="this.listQuery.teacherName === ''"
+            icon="el-icon-search"
+            type="primary"
+            style="width: 100%"
+            @click="handleListByTeacher"
+          >
+            搜索
+          </el-button>
+        </el-col>
       </el-row>
-
-      <p style="width:60%;margin-left:20%;margin-top: 30px">
-        <el-row style="display: inline-block;font-size:18px">
-          <span>
-            {{ noticeContent }}
-          </span>
-        </el-row>
-        <br>
-        <el-row style="display: inline-block;margin-top: 20px">
-          <span>
-            {{ new Date(noticeTime).toLocaleDateString() }}
-          </span>
-        </el-row>
-      </p>
     </div>
+
+    <p style="width:80%;margin-left:10%;margin-top: 30px">
+      <el-row style="display: inline-block; font-size: 1rem">
+        <span>
+          {{ noticeContent }}
+        </span>
+      </el-row>
+      <br>
+    </p>
 
     <!-- 数据展示 -->
     <el-table
@@ -117,7 +113,7 @@
       border
       fit
       highlight-current-row
-      style="width: 70%; margin-left: 15%; margin-top: 30px"
+      style="width: 80%; margin-left: 10%; margin-top: 30px"
     >
       <el-table-column align="center" label="序号" min-width="5%" prop="id">
         <template slot-scope="{ $index }">
@@ -361,12 +357,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.welcome_header {
+  text-align: center;
+  font-size: min(5vw,60px);
+  color: #0095da;
+}
+
+.krl {
+  width: 80%;
+  margin-left: 10%;
+  //margin: 0 50px 0 50px;
+}
+
+.krl2{
+  margin-top: 10px;
+}
 
 .visitor-filter-container{
-  z-index:999;
-  background-image: url("../assets/welcome-search.png");
-  background-size: auto;
-  background-size: cover;
+  //z-index:999;
+  //background-image: url("../assets/welcome-search.png");
+  //background-size: auto;
+  //background-size: cover;
 }
 
 </style>

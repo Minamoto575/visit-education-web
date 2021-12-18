@@ -82,6 +82,7 @@ import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
+  // eslint-disable-next-line vue/no-unused-components
   components: { SocialSign },
 
   data() {
@@ -103,8 +104,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [
