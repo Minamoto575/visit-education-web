@@ -10,29 +10,29 @@
       highlight-current-row
       style="width: 90%; margin-left: 5%"
     >
-      <el-table-column align="center" label="序号" min-width="5%" prop="num">
+      <el-table-column fixed="left" align="center" label="序号" min-width="50" prop="num">
         <template slot-scope="{ $index }">
           <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="管理员id" min-width="5%" prop="id">
+      <el-table-column fixed="left" align="center" label="管理员id" min-width="50" prop="id">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="管理员名称" min-width="8%">
+      <el-table-column align="center" label="管理员名称" min-width="80">
         <template slot-scope="{ row }">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="管理员类型" min-width="8%">
+      <el-table-column align="center" label="管理员类型" min-width="100">
         <template slot-scope="{ row }">
           <span>{{ row.type === 'super' ? '超级管理员' : '普通管理员' }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="最新修改时间" min-width="8%">
+      <el-table-column align="center" label="最新修改时间" min-width="180">
         <template slot-scope="{ row }">
           <span>{{
             new Date(row.gmtModified).toLocaleDateString() +
@@ -41,7 +41,7 @@
           }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="8%">
+      <el-table-column align="center" label="创建时间" min-width="180">
         <template slot-scope="{ row }">
           <span>{{
             new Date(row.gmtCreate).toLocaleDateString() +
@@ -57,7 +57,7 @@
         align="center"
         class-name="small-padding fixed-width"
         label="操作"
-        min-width="10%"
+        min-width="180"
       >
         <template slot-scope="{ row, $index }">
           <el-button

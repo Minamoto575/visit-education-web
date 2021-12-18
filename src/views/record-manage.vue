@@ -26,6 +26,7 @@
           </el-button>
         </el-col>
 
+        <!-- 组合搜索栏 -->
         <el-col :xs="24" :sm="8" :md="6" :lg="4" :xl="4">
           <el-select
             v-model="listQuery.projectName"
@@ -126,13 +127,7 @@
             style="width: 100%"
           />
         </el-col>
-        <!--        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="2">-->
-        <!--          -->
-        <!--        </el-col>-->
-
       </el-row>
-
-      <!-- 组合搜索栏 -->
 
       <!-- excel导出 -->
       <!-- <el-button
@@ -158,29 +153,29 @@
       highlight-current-row
       style="width: 98%; margin-left: 1%"
     >
-      <el-table-column align="center" label="序号" min-width="5%" prop="id">
+      <el-table-column fixed="left" align="center" label="序号" min-width="50" prop="id">
         <template slot-scope="{ $index }">
           <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="学校" min-width="8%">
+      <el-table-column align="center" label="学校" min-width="80">
         <template slot-scope="{ row }">
           <span>{{ row.schoolName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="学科专业名称" min-width="12%">
+      <el-table-column align="center" label="学科专业名称" min-width="150">
         <template slot-scope="{ row }">
           <span>{{ row.subjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="学科专业代码" min-width="6%">
+      <el-table-column align="center" label="学科专业代码" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.subjectCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="导师姓名" min-width="8%">
+      <el-table-column align="center" label="导师姓名" min-width="80">
         <template slot-scope="{ row }">
           <span>{{ row.teacherName }}</span>
         </template>
@@ -188,14 +183,14 @@
       <el-table-column
         align="center"
         label="课题名称"
-        min-width="14%"
+        min-width="200"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
           <span>{{ row.taskName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="项目名称" min-width="12%">
+      <el-table-column align="center" label="项目名称" min-width="220">
         <template slot-scope="{ row }">
           <span>{{ row.projectName }}</span>
         </template>
@@ -206,7 +201,7 @@
         align="center"
         class-name="small-padding fixed-width"
         label="操作"
-        min-width="10%"
+        min-width="180"
       >
         <template slot-scope="{ row, $index }">
           <el-button

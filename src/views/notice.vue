@@ -6,7 +6,7 @@
         v-model="noticeContent"
         :autosize="{ minRows: 4, maxRows: 4 }"
         type="textarea"
-        style="margin-top: 10px; width: 70%; margin-left: 15%;font-size:18px"
+        style="margin-top: 10px; width: 80%; margin-left: 10%;font-size:18px"
       />
     </el-row>
     <div align="center" style="margin-top:30px">

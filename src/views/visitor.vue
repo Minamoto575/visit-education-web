@@ -102,7 +102,6 @@
           {{ noticeContent }}
         </span>
       </el-row>
-      <br>
     </p>
 
     <!-- 数据展示 -->
@@ -115,29 +114,29 @@
       highlight-current-row
       style="width: 80%; margin-left: 10%; margin-top: 30px"
     >
-      <el-table-column align="center" label="序号" min-width="5%" prop="id">
+      <el-table-column fixed="left" align="center" label="序号" min-width="50" prop="id">
         <template slot-scope="{ $index }">
           <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="学校" min-width="8%">
+      <el-table-column align="center" label="学校" min-width="100">
         <template slot-scope="{ row }">
           <span>{{ row.schoolName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="学科专业名称" min-width="12%">
+      <el-table-column align="center" label="学科专业名称" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.subjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="学科专业代码" min-width="6%">
+      <el-table-column align="center" label="学科专业代码" min-width="120">
         <template slot-scope="{ row }">
           <span>{{ row.subjectCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="导师姓名" min-width="8%">
+      <el-table-column align="center" label="导师姓名" min-width="80">
         <template slot-scope="{ row }">
           <span>{{ row.teacherName }}</span>
         </template>
@@ -145,14 +144,14 @@
       <el-table-column
         align="center"
         label="课题名称"
-        min-width="14%"
+        min-width="140"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
           <span>{{ row.taskName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="项目名称" min-width="12%">
+      <el-table-column align="center" label="项目名称" min-width="220">
         <template slot-scope="{ row }">
           <span>{{ row.projectName }}</span>
         </template>
