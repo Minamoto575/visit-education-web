@@ -142,7 +142,6 @@
         导出
       </el-button> -->
     </div>
-
     <!-- 数据展示 -->
     <el-table
       :key="tableKey"
@@ -151,7 +150,6 @@
       border
       fit
       highlight-current-row
-      style="width: 98%; margin-left: 1%"
     >
       <el-table-column fixed="left" align="center" label="序号" min-width="50" prop="id">
         <template slot-scope="{ $index }">

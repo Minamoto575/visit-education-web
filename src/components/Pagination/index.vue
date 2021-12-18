@@ -1,16 +1,18 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
-    <el-pagination
-      :background="background"
-      :current-page.sync="currentPage"
-      :layout="layout"
-      :page-size.sync="pageSize"
-      :page-sizes="pageSizes"
-      :total="total"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+      <el-pagination
+        :background="background"
+        :current-page.sync="currentPage"
+        :layout="layout"
+        :page-size.sync="pageSize"
+        :page-sizes="pageSizes"
+        :total="total"
+        v-bind="$attrs"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </el-col>
   </div>
 </template>
 

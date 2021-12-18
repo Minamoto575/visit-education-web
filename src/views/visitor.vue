@@ -4,9 +4,9 @@
       国内访问学者查询系统
     </div>
     <el-divider />
-    <div class="krl">
+    <div class="operations-container">
       <el-row :gutter="10">
-        <el-col class="krl2" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
           <el-select
             v-model="listQuery.projectName"
             clearable
@@ -22,7 +22,7 @@
             />
           </el-select>
         </el-col>
-        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
           <el-select
             v-model="listQuery.schoolName"
             :disabled="listQuery.projectName === ''"
@@ -39,7 +39,7 @@
             />
           </el-select>
         </el-col>
-        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
           <el-select
             v-model="listQuery.subjectName"
             :disabled="listQuery.schoolName === ''"
@@ -56,7 +56,7 @@
             />
           </el-select>
         </el-col>
-        <el-col class="krl2" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
           <el-button
             v-waves
             :disabled="
@@ -72,7 +72,7 @@
             搜索
           </el-button>
         </el-col>
-        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
           <!-- 模糊搜索栏 -->
           <el-input
             v-model="listQuery.teacherName"
@@ -81,7 +81,7 @@
             @keyup.enter.native="handleListByTeacher"
           />
         </el-col>
-        <el-col class="krl2" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
+        <el-col class="operation" :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
           <el-button
             v-waves
             :disabled="this.listQuery.teacherName === ''"
@@ -362,13 +362,13 @@ export default {
   color: #0095da;
 }
 
-.krl {
+.operations-container {
   width: 80%;
   margin-left: 10%;
   //margin: 0 50px 0 50px;
 }
 
-.krl2{
+.operation{
   margin-top: 10px;
 }
 
