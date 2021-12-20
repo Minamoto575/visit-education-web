@@ -15,7 +15,7 @@
           <span>{{ (listQuery.page - 1) * listQuery.limit + $index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="left" align="center" label="管理员id" min-width="50" prop="id">
+      <el-table-column align="center" label="管理员id" min-width="50" prop="id">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
@@ -57,7 +57,7 @@
         align="center"
         class-name="small-padding fixed-width"
         label="操作"
-        min-width="180"
+        min-width="220"
       >
         <template slot-scope="{ row, $index }">
           <el-button
@@ -99,8 +99,6 @@
         :model="changePasswordData"
         :rules="rules"
         label-position="left"
-        label-width="140px"
-        style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="用户" prop="name">
           <el-input v-model="changePasswordData.name" :disabled="true" />

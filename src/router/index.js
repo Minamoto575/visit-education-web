@@ -70,26 +70,66 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/visitor'
   },
+  // {
+  //   path: '/gl',
+  //   component: Layout,
+  //   redirect: 'gl/recordManage',
+  //   meta: { title: '管理', icon: 'table' },
+  //   children: [
+  //     {
+  //       path: 'recordManage',
+  //       component: () => import('@/views/record-manage'),
+  //       name: 'RecordManage',
+  //       meta: { title: '记录管理', icon: 'list' }
+  //     },
+  //     {
+  //       path: 'adminManage',
+  //       component: () => import('@/views/admin-manage'),
+  //       name: 'AdminManage',
+  //       meta: { title: '管理员管理', icon: 'user' }
+  //     },
+  //     {
+  //       path: 'notice',
+  //       component: () => import('@/views/notice'),
+  //       name: 'notice',
+  //       meta: { title: '通知发布', icon: 'guide' }
+  //     }
+  //   ]
+  // },
   {
     path: '/gl',
+    redirect: '/recordManage'
+  },
+  {
+    path: '/recordManage',
     component: Layout,
-    redirect: 'gl/recordManage',
-    meta: { title: '管理', icon: 'table' },
     children: [
       {
-        path: 'recordManage',
+        path: '/recordManage',
         component: () => import('@/views/record-manage'),
         name: 'RecordManage',
         meta: { title: '记录管理', icon: 'list' }
-      },
+      }
+    ]
+  },
+  {
+    path: '/adminManage',
+    component: Layout,
+    children: [
       {
-        path: 'adminManage',
+        path: '/adminManage',
         component: () => import('@/views/admin-manage'),
         name: 'AdminManage',
         meta: { title: '管理员管理', icon: 'user' }
-      },
+      }
+    ]
+  },
+  {
+    path: '/notice',
+    component: Layout,
+    children: [
       {
-        path: 'notice',
+        path: '/notice',
         component: () => import('@/views/notice'),
         name: 'notice',
         meta: { title: '通知发布', icon: 'guide' }

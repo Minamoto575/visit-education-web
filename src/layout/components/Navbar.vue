@@ -61,27 +61,33 @@
           :model="changePasswordData"
           :rules="changePasswordRules"
           label-position="left"
-          label-width="100px"
-          style="width: 400px; margin-left: 50px"
         >
-          <el-form-item label="用户名：" prop="name">
-            <el-input v-model="changePasswordData.name" :disabled="true" />
+          <el-form-item prop="name">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="changePasswordData.name" readonly suffix-icon="lock" />
+            </el-col>
           </el-form-item>
-          <el-form-item label="原密码：" prop="oldPassword">
-            <el-input v-model="changePasswordData.oldPassword" />
+          <el-form-item prop="oldPassword">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="changePasswordData.oldPassword" placeholder="旧密码" :minlength="4" :maxlength="18" clearable show-password />
+            </el-col>
           </el-form-item>
-          <el-form-item label="新密码：" prop="newPassword1">
-            <el-input v-model="changePasswordData.newPassword1" />
+          <el-form-item prop="newPassword1">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="changePasswordData.newPassword1" placeholder="新密码" :minlength="6" :maxlength="18" clearable show-password />
+            </el-col>
           </el-form-item>
-          <el-form-item label="新密码：" prop="newPassword2">
-            <el-input v-model="changePasswordData.newPassword2" />
+          <el-form-item prop="newPassword2">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="changePasswordData.newPassword2" placeholder="确认新密码" :minlength="6" :maxlength="18" clearable show-password />
+            </el-col>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="changePasswordFormVisible = false">
-            取消
-          </el-button>
-          <el-button type="primary" @click="changePassword()"> 确认</el-button>
+          <!--          <el-button @click="changePasswordFormVisible = false">-->
+          <!--            取消-->
+          <!--          </el-button>-->
+          <el-button type="primary" @click="changePassword()"> 修改</el-button>
         </div>
       </el-dialog>
 
@@ -96,22 +102,26 @@
           :model="registerData"
           :rules="registerRules"
           label-position="left"
-          label-width="100px"
-          style="width: 400px; margin-left: 50px"
         >
-          <el-form-item label="用户名：" prop="name">
-            <el-input v-model="registerData.name" />
+          <el-form-item prop="name" style="vertical-align:middle;">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="registerData.name" placeholder="用户名" :minlength="4" :maxlength="18" clearable />
+            </el-col>
           </el-form-item>
-          <el-form-item label="密码：" prop="password1">
-            <el-input v-model="registerData.password1" />
+          <el-form-item prop="password1">
+            <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+              <el-input v-model="registerData.password1" placeholder="密码" :minlength="6" :maxlength="18" clearable show-password />
+            </el-col>
           </el-form-item>
-          <el-form-item label="密码：" prop="password2">
-            <el-input v-model="registerData.password2" />
+          <el-form-item prop="password2">
+            <el-col :xs="24" :sm="16" :md="12" :lg="12" :xl="9">
+              <el-input v-model="registerData.password2" placeholder="再输入一次密码" :minlength="6" :maxlength="18" clearable show-password />
+            </el-col>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="registerFormVisible = false"> 取消</el-button>
-          <el-button type="primary" @click="register()"> 确认</el-button>
+          <!--          <el-button @click="registerFormVisible = false"> 取消</el-button>-->
+          <el-button type="primary" @click="register()"> 注册</el-button>
         </div>
       </el-dialog>
     </div>

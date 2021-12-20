@@ -240,35 +240,46 @@
         :model="temp"
         :rules="rules"
         label-position="left"
-        label-width="140px"
-        style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="学校" prop="schoolName">
-          <el-input v-model="temp.schoolName" />
+        <el-form-item prop="schoolName">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input v-model="temp.schoolName" placeholder="学校名称" suffix-icon="" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="学科专业名称" prop="subjectName">
-          <el-input v-model="temp.subjectName" />
+        <el-form-item prop="subjectName">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input v-model="temp.subjectName" placeholder="学科专业名称" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="学科专业代码" prop="subjectCode">
-          <el-input v-model="temp.subjectCode" />
+        <el-form-item prop="subjectCode">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input v-model="temp.subjectCode" placeholder="学科专业代码" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="导师姓名" prop="teacherName">
-          <el-input v-model="temp.teacherName" />
+        <el-form-item prop="teacherName">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input v-model="temp.teacherName" placeholder="导师姓名" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="课题名称" prop="taskName">
-          <el-input
-            v-model="temp.taskName"
-            :autosize="{ minRows: 4, maxRows: 4 }"
-            resize="none"
-            type="textarea"
-          />
+        <el-form-item prop="taskName">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input
+              v-model="temp.taskName"
+              placeholder="课题名称"
+              :autosize="{ minRows: 1, maxRows: 2 }"
+              resize="none"
+              type="textarea"
+            />
+          </el-col>
         </el-form-item>
-        <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="temp.projectName" />
+        <el-form-item prop="projectName">
+          <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
+            <el-input v-model="temp.projectName" placeholder="项目名称" />
+          </el-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false"> 取消</el-button>
+        <!--        <el-button @click="dialogFormVisible = false"> 取消</el-button>-->
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
@@ -321,8 +332,8 @@ export default {
       dialogFormVisible: false, // 添加更改栏是否展示
       dialogStatus: '', // 修改 or  添加
       textMap: {
-        update: '修改',
-        create: '添加'
+        update: '修改记录',
+        create: '添加记录'
       },
       // 数据项的约束
       rules: {
