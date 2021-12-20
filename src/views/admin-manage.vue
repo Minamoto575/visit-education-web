@@ -83,6 +83,8 @@
     <!-- 分页 -->
     <pagination
       v-show="total > 0"
+      :small="screenWidth < 800"
+      :layout="screenWidth < 800 ? layout1 : layout2"
       :limit.sync="listQuery.limit"
       :page.sync="listQuery.page"
       :total="total"
@@ -181,7 +183,10 @@ export default {
           { required: true, validator: validatePass2, trigger: 'blur' }
         ]
       },
-      ModifyIndex: -1
+      ModifyIndex: -1,
+      screenWidth: document.body.clientWidth, // 屏幕尺寸
+      layout1: 'total, sizes, prev, next',
+      layout2: 'total, sizes, prev, pager, next, jumper'
     }
   },
   created() {
@@ -193,9 +198,14 @@ export default {
     // 传递更新列表方法  供注册管理后调用
     MiddleUtil.$on('register', function(msg) {
       console.log(msg)
-
       that.listAll()
     })
+    window.onresize = () => {
+      return (() => {
+        window.screenWidth = document.body.clientWidth
+        that.screenWidth = window.screenWidth
+      })()
+    }
   },
   methods: {
     init() {

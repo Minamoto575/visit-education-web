@@ -224,6 +224,8 @@
     <!-- 分页 -->
     <pagination
       v-show="total > 0"
+      :small="screenWidth < 800"
+      :layout="screenWidth < 800 ? layout1 : layout2"
       :limit.sync="listQuery.limit"
       :page.sync="listQuery.page"
       :total="total"
@@ -345,7 +347,10 @@ export default {
       },
       downloadLoading: false,
       ModifyIndex: -1, // 当前修改数据项的索引
-      presentedData: '' // 展示组合搜索的数据  还是教师名称搜索的数据
+      presentedData: '', // 展示组合搜索的数据  还是教师名称搜索的数据
+      screenWidth: document.body.clientWidth, // 屏幕尺寸
+      layout1: 'total, sizes, prev, next', // 分页布局1
+      layout2: 'total, sizes, prev, pager, next, jumper' // 分页布局2
     }
   },
   created() {
@@ -354,6 +359,16 @@ export default {
 
     // 获取所有记录
     this.listAllRecords()
+  },
+  mounted() {
+    // 监视窗口宽度变化
+    const that = this
+    window.onresize = () => {
+      return (() => {
+        window.screenWidth = document.body.clientWidth
+        that.screenWidth = window.screenWidth
+      })()
+    }
   },
   methods: {
     init() {

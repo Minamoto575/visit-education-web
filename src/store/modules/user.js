@@ -46,7 +46,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ name: username.trim(), password: password }).then(response => {
         // console.log(response);
-        if (response.code == 200) {
+        if (response.code === 200) {
           const token = response.extra.token
           const id = response.extra.id
           const name = response.extra.name

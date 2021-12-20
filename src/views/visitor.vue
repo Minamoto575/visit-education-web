@@ -161,12 +161,15 @@
     <!-- 分页 -->
     <pagination
       v-show="total > 0"
+      :small="screenWidth < 800"
+      :layout="screenWidth < 800 ? layout1 : layout2"
       :limit.sync="listQuery.limit"
       :page.sync="listQuery.page"
       :total="total"
       style="text-align: center"
       @pagination="handlePagination"
     />
+
   </div>
 </template>
 
@@ -200,13 +203,25 @@ export default {
       },
       presentedData: '', // 展示组合搜索的数据  还是教师名称搜索的数据
       noticeContent: '',
-      noticeTime: ''
+      noticeTime: '',
+      screenWidth: document.body.clientWidth, // 屏幕尺寸
+      layout1: 'total, sizes, prev, next',
+      layout2: 'total, sizes, prev, pager, next, jumper'
     }
   },
   created() {
     // 获取所有项目名称
     this.listProjects()
     this.getLatestNotice()
+  },
+  mounted() {
+    const that = this
+    window.onresize = () => {
+      return (() => {
+        window.screenWidth = document.body.clientWidth
+        that.screenWidth = window.screenWidth
+      })()
+    }
   },
   methods: {
     init() {
