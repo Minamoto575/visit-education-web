@@ -4,6 +4,14 @@
       国内访问学者查询系统
     </div>
     <el-divider />
+    <!--通知-->
+    <p style="width:70%;margin-left:15%;margin-top: 30px">
+      <el-row style="display: inline-block; font-size: 1rem">
+        <span>
+          {{ noticeContent }}
+        </span>
+      </el-row>
+    </p>
     <div class="operations-container">
       <el-row :gutter="10">
         <el-col class="operation" :xs="24" :sm="12" :md="6" :lg="6" :xl="4">
@@ -95,15 +103,6 @@
         </el-col>
       </el-row>
     </div>
-
-    <p style="width:80%;margin-left:10%;margin-top: 30px">
-      <el-row style="display: inline-block; font-size: 1rem">
-        <span>
-          {{ noticeContent }}
-        </span>
-      </el-row>
-    </p>
-
     <!-- 数据展示 -->
     <el-table
       :key="tableKey"
