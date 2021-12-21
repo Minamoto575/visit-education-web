@@ -147,9 +147,11 @@
         min-width="140"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <span>{{ row.taskName }}</span>
-        </template>
+        <el-tooltip max-width="200">
+          <template slot-scope="{ row }">
+            <span>{{ row.taskName }}</span>
+          </template>
+        </el-tooltip>
       </el-table-column>
       <el-table-column align="center" label="项目名称" min-width="220">
         <template slot-scope="{ row }">
@@ -370,13 +372,15 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .welcome_header {
   text-align: center;
   font-size: min(5vw,60px);
   color: #0095da;
 }
-
+.el-tooltip__popper{
+  font-size: 14px; max-width:max(200px,50%)
+}
 .operations-container {
   width: 80%;
   margin-left: 10%;

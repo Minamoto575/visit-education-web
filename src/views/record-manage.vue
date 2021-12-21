@@ -184,7 +184,7 @@
         min-width="200"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
+        <template slot-scope="{ row }" class="taskName-content">
           <span>{{ row.taskName }}</span>
         </template>
       </el-table-column>
@@ -594,55 +594,73 @@ export default {
 
     // 删除某条记录
     handleDelete(row, index) {
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      })
-        .then(() => {
-          RecordAPI.deleteRecord(row.id).then((response) => {
-            if (response.code === 200) {
-              this.$notify({
-                title: 'Success',
-                message: '删除成功',
-                type: 'success',
-                duration: 3000
-              })
-              this.list.splice(index, 1)
-              // 列表所有均被删除
-              if (this.list.length === 0) {
-                if (this.listQuery.page === 1) {
-                  // 全部删除则重置组合搜索栏
-                  this.resetCombinationSearch()
-                }
-                this.listQuery.page = this.listQuery.page - 1
-              }
-              // 刷新列表
-              if (this.listQuery.page > 0) {
-                if (this.presentedData === 'teacher') {
-                  this.listByTeacher()
-                } else if (this.presentedData === 'combination') {
-                  this.listByCombination()
-                } else {
-                  this.listAllRecords()
-                }
-              }
-            } else {
-              this.$notify({
-                title: 'Fail',
-                message: '删除失败',
-                type: 'error',
-                duration: 3000
-              })
-            }
+      if (this.screenWidth > 500) {
+        this.$confirm('将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        })
+          .then(() => {
+            this.deleteOne(row, index)
           })
+          .catch(() => {
+            //  取消
+          })
+      } else { // 适配手机端
+        this.$customMessage({
+          content: '是否删除这条记录',
+          confirmText: '删除',
+          confirmColor: '#f60227',
+          showCancel: true
+        }).then((action) => {
+          this.deleteOne(row, index)
+        }).catch((action) => {
+          // 取消
         })
-        .catch(() => {
-        })
+      }
     },
-
+    // 删除单条记录
+    deleteOne(row, index) {
+      RecordAPI.deleteRecord(row.id).then((response) => {
+        if (response.code === 200) {
+          this.$notify({
+            title: 'Success',
+            message: '删除成功',
+            type: 'success',
+            duration: 3000
+          })
+          this.list.splice(index, 1)
+          // 列表所有均被删除
+          if (this.list.length === 0) {
+            if (this.listQuery.page === 1) {
+              // 全部删除则重置组合搜索栏
+              this.resetCombinationSearch()
+            }
+            this.listQuery.page = this.listQuery.page - 1
+          }
+          // 刷新列表
+          if (this.listQuery.page > 0) {
+            if (this.presentedData === 'teacher') {
+              this.listByTeacher()
+            } else if (this.presentedData === 'combination') {
+              this.listByCombination()
+            } else {
+              this.listAllRecords()
+            }
+          }
+        } else {
+          this.$notify({
+            title: 'Fail',
+            message: '删除失败',
+            type: 'error',
+            duration: 3000
+          })
+        }
+      })
+    },
     // 批量删除记录 学科名称可以为空
     handleDeleteBatch() {
+      // 检查
       if (this.listQuery.projectName === '') {
         this.$message({
           message: '项目名称不能为空',
@@ -651,45 +669,65 @@ export default {
         })
         return
       }
-      this.$confirm('此操作将永久这些记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      })
-        .then(() => {
-          const data = {
-            projectName: this.listQuery.projectName,
-            schoolName: this.listQuery.schoolName,
-            subjectName: this.listQuery.subjectName
-          }
-          RecordAPI.deleteBatch(data).then((response) => {
-            if (response.code === 200) {
-              this.$notify({
-                title: 'Success',
-                message: '删除成功',
-                type: 'success',
-                duration: 3000
-              })
-              // 更新项目列表
-              this.listProjects()
-              // 重置组合搜索栏
-              this.resetCombinationSearch()
-              // 删除后展示所以数据
-              this.page = 1
-              this.presentedData = 'all'
-              this.listAllRecords()
-            } else {
-              this.$notify({
-                title: 'Fail',
-                message: '删除失败',
-                type: 'error',
-                duration: 3000
-              })
-            }
-          })
+      // 适配手机
+      if (this.screenWidth > 500) {
+        this.$confirm('将永久删除这些记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
         })
+          .then(() => {
+            this.deleteBatch()
+          })
+          .catch(() => {
+            //  取消
+          })
+      } else { // 适配手机端
+        this.$customMessage({
+          content: '是否删除这些记录',
+          confirmText: '删除',
+          confirmColor: '#f60227',
+          showCancel: true
+        }).then((action) => {
+          this.deleteBatch()
+        }).catch((action) => {
+          // 取消
+        })
+      }
     },
-
+    // 批量删除
+    deleteBatch() {
+      const data = {
+        projectName: this.listQuery.projectName,
+        schoolName: this.listQuery.schoolName,
+        subjectName: this.listQuery.subjectName
+      }
+      RecordAPI.deleteBatch(data).then((response) => {
+        if (response.code === 200) {
+          this.$notify({
+            title: 'Success',
+            message: '删除成功',
+            type: 'success',
+            duration: 3000
+          })
+          // 更新项目列表
+          this.listProjects()
+          // 重置组合搜索栏
+          this.resetCombinationSearch()
+          // 删除后展示所以数据
+          this.page = 1
+          this.presentedData = 'all'
+          this.listAllRecords()
+        } else {
+          this.$notify({
+            title: 'Fail',
+            message: '删除失败',
+            type: 'error',
+            duration: 3000
+          })
+        }
+      })
+    },
     // 导出excel
     handleDownload() {
       this.downloadLoading = true
@@ -797,3 +835,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.el-tooltip__popper{
+  font-size: 14px; max-width:max(200px,50%)
+}
+</style>
+

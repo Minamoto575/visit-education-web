@@ -15,6 +15,7 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
+import CustomMessage from './components/Message/index' // 自定义弹窗，用于适配手机端
 
 /**
  * If you don't want to use mock-server
@@ -28,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
-
+Vue.use(CustomMessage)
 Vue.use(Element, {
   size: Cookies.get('size') || 'default' // set element-ui default size
   // locale: enLang // 如果使用中文，无需设置，请删除

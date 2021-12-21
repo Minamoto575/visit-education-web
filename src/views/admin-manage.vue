@@ -111,7 +111,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false"> 取消</el-button>
+        <!--        <el-button @click="dialogFormVisible = false"> 取消</el-button>-->
         <el-button type="primary" @click="changePassword()"> 确认</el-button>
       </div>
     </el-dialog>
@@ -285,38 +285,56 @@ export default {
 
     // 删除某条记录
     handleDelete(row, index) {
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      })
-        .then(() => {
-          AdminAPI.deleteAdmin(row.id).then((response) => {
-            if (response.code === 200) {
-              this.$notify({
-                title: 'Success',
-                message: '删除成功',
-                type: 'success',
-                duration: 3000
-              })
-              this.list.splice(index, 1)
-              // 当前列表记录都被删除 当前页码减一
-              if (this.list.length === 0) {
-                this.listQuery.page = Math.max(this.listQuery.page - 1, 1)
-              }
-              this.listAll()
-            } else {
-              this.$notify({
-                title: 'Fail',
-                message: '删除失败',
-                type: 'error',
-                duration: 3000
-              })
-            }
+      // 适配手机
+      if (this.screenWidth > 500) {
+        this.$confirm('将永久删除该管理员, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        })
+          .then(() => {
+            this.deleteOne(row, index)
           })
+          .catch(() => {
+            //  取消
+          })
+      } else { // 适配手机端
+        this.$customMessage({
+          content: '是否删除该管理员',
+          confirmText: '删除',
+          confirmColor: '#f60227',
+          showCancel: true
+        }).then((action) => {
+          this.deleteOne(row, index)
+        }).catch((action) => {
+          // 取消
         })
-        .catch(() => {
-        })
+      }
+    },
+    deleteOne(row, index) {
+      AdminAPI.deleteAdmin(row.id).then((response) => {
+        if (response.code === 200) {
+          this.$notify({
+            title: 'Success',
+            message: '删除成功',
+            type: 'success',
+            duration: 3000
+          })
+          this.list.splice(index, 1)
+          // 当前列表记录都被删除 当前页码减一
+          if (this.list.length === 0) {
+            this.listQuery.page = Math.max(this.listQuery.page - 1, 1)
+          }
+          this.listAll()
+        } else {
+          this.$notify({
+            title: 'Fail',
+            message: '删除失败',
+            type: 'error',
+            duration: 3000
+          })
+        }
+      })
     }
   }
 }
