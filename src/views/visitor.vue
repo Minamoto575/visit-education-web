@@ -147,11 +147,9 @@
         min-width="140"
         show-overflow-tooltip
       >
-        <el-tooltip max-width="200">
-          <template slot-scope="{ row }">
-            <span>{{ row.taskName }}</span>
-          </template>
-        </el-tooltip>
+        <template slot-scope="{ row }">
+          <span>{{ row.taskName }}</span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="项目名称" min-width="220">
         <template slot-scope="{ row }">
