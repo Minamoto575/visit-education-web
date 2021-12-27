@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect', '/visitor'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/visitor', '/gl'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -62,10 +62,10 @@ router.beforeEach(async(to, from, next) => {
       removeId()
       removeType()
       removeName()
-      Message({
-        type: 'info',
-        message: '登录过期,请重新登录'
-      })
+      // Message({
+      //   type: 'info',
+      //   message: '登录过期,请重新登录'
+      // })
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
