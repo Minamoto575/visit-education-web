@@ -107,12 +107,12 @@
         </el-form-item>
         <el-form-item prop="password1">
           <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
-            <el-input v-model="changePasswordData.password1" placeholder="新密码" />
+            <el-input v-model="changePasswordData.password1" placeholder="新密码" :minlength="6" :maxlength="18" clearable show-password />
           </el-col>
         </el-form-item>
         <el-form-item prop="password2">
           <el-col :xs="24" :sm="16" :md="14" :lg="12" :xl="9">
-            <el-input v-model="changePasswordData.password2" placeholder="再输入一次" />
+            <el-input v-model="changePasswordData.password2" placeholder="再输入一次" :minlength="6" :maxlength="18" clearable show-password />
           </el-col>
         </el-form-item>
       </el-form>
