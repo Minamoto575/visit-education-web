@@ -331,6 +331,7 @@ export default {
           }
           AdminAPI.register(data).then((response) => {
             if (response.code === 200) {
+              this.registerFormVisible = false
               this.$notify({
                 title: 'Success',
                 message: data.name + '注册成功',
@@ -354,7 +355,6 @@ export default {
           })
         }
       })
-      this.registerFormVisible = false
     },
 
     resetAdmin() {
