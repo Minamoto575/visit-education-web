@@ -41,7 +41,7 @@ service.interceptors.response.use(
       removeName()
       Message({
         type: 'info',
-        message: '登录过期'
+        message: '登录过期,请重新登录'
       })
       router.push('/login')
       return
