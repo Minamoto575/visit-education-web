@@ -172,7 +172,7 @@ export default {
             .then((res) => {
               if (res.code === 200) {
                 this.$router.push({
-                  path: this.redirect || '/',
+                  path: this.redirect || '/gl',
                   query: this.otherQuery
                 })
                 this.$message({

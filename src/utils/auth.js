@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Admin-Token'
+const TokenKey = 'satoken'
 const Type = 'type' // 用户类型
 const Id = 'id'
 const Name = 'name'
