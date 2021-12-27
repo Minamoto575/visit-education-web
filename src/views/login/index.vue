@@ -180,8 +180,7 @@ export default {
                   type: 'success',
                   duration: 3000
                 })
-              }
-              if (res.code === 401) {
+              } else {
                 this.$message({
                   message: '用户名或密码错误',
                   type: 'error',
